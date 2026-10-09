@@ -1,0 +1,44 @@
+{
+  "name": "political-insight-node",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "description": "PoliticalInsight backend — Node/TypeScript port of the Python/FastAPI backend",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node --import tsx src/index.ts",
+    "build": "tsc --noEmit",
+    "build:deputies": "tsx src/tools/deputyBuilder.ts",
+    "etl": "tsx src/tools/etl.ts",
+    "scrape:imza": "tsx src/tools/imzaScraper.ts",
+    "test": "node --test --import tsx \"test/**/*.test.ts\"",
+    "etl:train": "tsx src/tools/etl.ts train-topic",
+    "dagilim": "tsx src/tools/dagilim.ts",
+    "migrate:imza-attrib": "tsx src/tools/migrateImzaAttrib.ts",
+    "migrate:onerge-atif": "tsx src/tools/migrateOnergeAtif.ts",
+    "migrate:anakronizm": "tsx src/tools/migrateAnakronizm.ts",
+    "sirasayisi": "node --import tsx src/tools/sirasayisiScraper.ts",
+    "basilmis-url": "node --import tsx src/tools/basilmisUrl.ts",
+    "tarih-backfill": "node --import tsx src/tools/tarihBackfill.ts",
+    "backup": "node --import tsx src/tools/backup.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@fastify/rate-limit": "^11.2.0",
+    "cheerio": "^1.0.0",
+    "defuddle": "^0.19.1",
+    "fastify": "^5.2.0",
+    "ioredis": "^5.4.1",
+    "pdfjs-dist": "^6.1.200",
+    "playwright": "^1.61.1",
+    "undici": "^7.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

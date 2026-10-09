@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mizan · Parti</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+
+  :root { --diger:#7288ae; }
+  :root[data-theme="light"] { --diger:#7288ae; }
+  :root[data-theme="dark"] { --diger:#4b5694; }
+
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .eyebrow { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--petrol); }
+  a { color:inherit; }
+
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 18px;
+    background:color-mix(in srgb, var(--paper) 86%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.1rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); }
+
+  .nav-r { display:flex; gap:8px; align-items:center; min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .nav-r::-webkit-scrollbar { display:none; }
+  .nav-r a { font-size:.8rem; font-weight:700; text-decoration:none; color:var(--petrol-ink); padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .theme-tgl { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.9rem; cursor:pointer; }
+
+  .wrap { max-width:820px; margin:0 auto; padding:22px 18px 60px; }
+  .back { text-decoration:none; color:var(--petrol); font-weight:700; font-size:.8rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:8px 0 0; display:flex; align-items:center; gap:12px; }
+  h1 .dot { width:15px; height:15px; border-radius:50%; flex:none; }
+  .lede { color:var(--ink-2); font-size:.95rem; margin:10px 0 0; max-width:56ch; }
+  .lede b { color:var(--ink); font-weight:600; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:18px; margin:22px 0 6px; }
+
+  .fld { min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .fld::-webkit-scrollbar { display:none; }
+  .fld > label { display:block; font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:var(--card); }
+  .seg button { border:none; background:transparent; padding:7px 13px; font:inherit; font-size:.8rem; font-weight:600; color:var(--ink-2); cursor:pointer; }
+  .seg button.on { background:var(--petrol); color:var(--card); }
+  select { font-family:var(--sans); font-size:.85rem; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:7px 10px; cursor:pointer; min-width:170px; }
+
+  .rank { display:flex; flex-direction:column; }
+  .rrow { display:grid; grid-template-columns:112px 1fr auto; align-items:center; gap:12px; padding:7px 0; border-top:1px solid var(--line-2); cursor:pointer; border-radius:7px; transition:background .12s; }
+  .rrow:first-child { border-top:0; }
+  .rrow:hover { background:var(--line-2); }
+  .rrow.sel { background:var(--petrol-wash); }
+  .rrow .p { font-size:.85rem; font-weight:600; color:var(--ink-2); display:flex; align-items:center; gap:7px; padding-left:6px; }
+  .rrow .p .d { width:9px; height:9px; border-radius:50%; flex:none; }
+  .rrow.diger .p, .rrow.diger .v { color:var(--muted); }
+  .track { position:relative; height:12px; border-radius:3px; background:var(--line-2); overflow:hidden; }
+  .rrow:hover .track, .rrow.sel .track { background:color-mix(in srgb, var(--card) 55%, var(--line-2)); }
+  .track i { position:absolute; inset:0 auto 0 0; border-radius:3px; transition:width .5s cubic-bezier(.22,1,.36,1); }
+  .rrow .v { font-variant-numeric:tabular-nums; font-weight:700; font-size:.88rem; min-width:52px; text-align:right; padding-right:6px; }
+  .rrow .v small { font-weight:500; color:var(--muted); font-size:.78em; }
+  .hint { font-size:.72rem; color:var(--muted); margin-top:10px; }
+  .mbars { display:flex; flex-direction:column; }
+  .mbrow { display:grid; grid-template-columns:56px 1fr auto; align-items:center; gap:10px; padding:5px 0; border-top:1px solid var(--line-2); }
+  .mbrow:first-child { border-top:0; }
+  .mbrow.muted .ml, .mbrow.muted .mv { color:var(--muted); }
+  .ml { font-size:.76rem; font-weight:600; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+  .mtrack { position:relative; height:11px; border-radius:3px; background:var(--line-2); overflow:hidden; }
+  .mtrack i { position:absolute; inset:0 auto 0 0; border-radius:3px; }
+  .mv { font-variant-numeric:tabular-nums; font-weight:700; font-size:.8rem; min-width:46px; text-align:right; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:13px; font-size:.78rem; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; color:var(--ink-2); font-weight:600; }
+  .legend i { width:14px; height:3px; border-radius:2px; }
+  .sm { padding:9px 0; border-top:1px solid var(--line-2); }
+  .sm:first-child { border-top:0; }
+  .sml { font-size:.8rem; font-weight:600; color:var(--ink-2); display:flex; align-items:center; gap:7px; margin-bottom:6px; }
+  .sml .d { width:9px; height:9px; border-radius:50%; }
+  .smbars { display:flex; align-items:flex-end; gap:1.5px; height:40px; }
+  .smb { flex:1; min-width:2px; border-radius:2px 2px 0 0; }
+  .tip .r { display:flex; justify-content:space-between; gap:14px; margin-top:2px; }
+
+  svg { display:block; width:100%; height:auto; overflow:visible; font-family:var(--sans); }
+
+  .tip { position:fixed; pointer-events:none; background:#111844; border:1px solid #4b5694; color:#eae0cf; font-size:.75rem; padding:7px 10px; border-radius:8px; z-index:20; display:none; box-shadow:0 8px 24px rgba(0,0,0,.5); }
+  footer { text-align:center; color:var(--muted); font-size:.76rem; padding:34px 0 0; margin-top:28px; border-top:1px solid var(--line); }
+  footer a { color:var(--petrol-ink); }
+  #empty { color:var(--muted); padding:18px 2px; font-size:.9rem; }
+
+  .kpi { display:flex; align-items:baseline; gap:10px; margin:2px 0 4px; flex-wrap:wrap; }
+  .kpi > b { font-family:var(--serif); font-size:2rem; font-weight:600; color:var(--petrol); font-variant-numeric:tabular-nums; line-height:1; }
+  .kpi span { font-size:.8rem; color:var(--muted); }
+  .kpi span b { color:var(--ink-2); font-weight:700; }
+  .cez-leg { display:flex; gap:16px; flex-wrap:wrap; font-size:.74rem; color:var(--ink-2); margin:11px 0 15px; font-weight:600; }
+  .cez-leg i { display:inline-block; width:13px; height:13px; border-radius:3px; vertical-align:-2px; margin-right:5px; }
+  .cez-leg i.wash { background:color-mix(in srgb, var(--petrol) 30%, var(--card)); border:1px solid color-mix(in srgb, var(--petrol) 45%, var(--card)); }
+  .cez-leg i.full { background:var(--petrol); }
+  .crow { display:grid; grid-template-columns:116px 1fr 78px; align-items:center; gap:10px; padding:6px 0; border-top:1px solid var(--line-2); }
+  .crow:first-child { border-top:0; }
+  .crow .cl { font-size:.78rem; font-weight:600; color:var(--ink-2); display:flex; align-items:center; gap:6px; min-width:0; }
+  .crow .cl span.t { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .crow .cl .d { width:8px; height:8px; border-radius:50%; flex:none; }
+  .cbar { display:grid; grid-template-columns:1fr 1fr; align-items:center; height:15px; position:relative; }
+  .cbar::before { content:''; position:absolute; left:50%; top:-2px; bottom:-2px; width:1px; background:var(--line); }
+  .ch { display:flex; align-items:center; height:100%; gap:5px; overflow:hidden; }
+  .ch.l { justify-content:flex-end; }
+  .ch.l i { border-radius:3px 0 0 3px; }
+  .ch.r i { border-radius:0 3px 3px 0; }
+  .ch i { height:100%; display:block; transition:width .5s cubic-bezier(.22,1,.36,1); }
+  .ch .cn { font-size:.68rem; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; flex:none; }
+  .cbadge { font-size:.7rem; font-weight:700; text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  .cbadge.talk { color:var(--ink); background:var(--line-2); padding:1px 6px; }
+  .cbadge.act { color:var(--petrol-ink); } .cbadge.mid { color:var(--muted); }
+
+  .kozet { font-size:.85rem; color:var(--ink-2); background:var(--petrol-wash);
+           border-radius:8px; padding:9px 11px; margin-bottom:12px; line-height:1.45; }
+  .kozet b { color:var(--petrol-ink); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  @media (max-width:560px) { .kozet { font-size:.8rem; padding:8px 10px; } }
+
+  .ystat { font-size:.9rem; color:var(--ink); margin-bottom:12px; line-height:1.5; }
+  .ystat b { font-size:1.15rem; font-family:var(--serif); }
+  .ykar { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:9px; padding:4px 0; font-size:.76rem; }
+  .ykar.me { font-weight:700; }
+  .ykar .yp { color:var(--ink-2); white-space:nowrap; }
+  .ykar.me .yp { color:var(--petrol-ink); }
+  .ytrack { display:block; height:7px; background:var(--line-2); border-radius:4px; overflow:hidden; }
+  .yfill { display:block; height:100%; border-radius:4px; }
+  .ykar .yn { color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; font-size:.72rem; }
+  .ykarlbl { font-size:.7rem; color:var(--muted); margin:12px 0 4px; letter-spacing:.03em; text-transform:uppercase; }
+
+  @media (max-width:560px) { h1 { font-size:1.55rem; } .rrow { grid-template-columns:92px 1fr auto; gap:9px; } .controls { gap:14px; } select { min-width:0; flex:1; } #chartLegend { display:none; }
+    .crow { grid-template-columns:84px 1fr 62px; gap:7px; } .crow .cl { font-size:.72rem; } .ch .cn { display:none; } .cbadge { font-size:.64rem; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="wordmark" aria-hidden="true"></span>
+  <div class="nav-r"><button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button></div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="/">← Partiler</a>
+  <h1 id="h1"><span class="dot" id="h1dot"></span><span id="h1txt">Parti</span></h1>
+  <p class="lede" id="lede"></p>
+
+  <div class="controls">
+    <div class="fld"><label>Yasama dönemi</label><select id="donemSel"></select></div>
+
+    <div class="fld" id="fldZaman"><label>Zaman dilimi</label>
+
+      <div class="seg" id="period"></div>
+    </div>
+    <div class="fld" id="fldKonu"><label>Konu</label><select id="konuSel"></select></div>
+  </div>
+
+  <div class="card" id="oyCard" hidden>
+    <div class="ttl">Bu parti fiilen nasıl oy verdi?</div>
+    <div class="sub">Genel Kurul'da <b>kayda geçen açık oylamalar</b> — niyet (teklif) veya söz (konuşma) değil, <b>oy</b></div>
+    <div id="oy"></div>
+  </div>
+
+  <div class="card" id="yasamaCard">
+    <div class="ttl">Bu partinin kanun teklifleri ne oldu?</div>
+    <div class="sub">Verdiği tekliflerin <b>TBMM'deki resmî durumu</b> — kaçı kanunlaştı, kaçı komisyonda bekliyor</div>
+    <div id="yasama"></div>
+  </div>
+
+  <div class="card" id="donemCard" hidden>
+    <div class="ttl">Bu parti dönemler arasında değişti mi?</div>
+    <div class="sub">Gündeminin <b>konu dağılımı</b> — 26 / 27 / 28. Dönem yan yana. <b>Adet değil pay (%)</b>: dönemler farklı uzunlukta</div>
+    <div id="donemK"></div>
+  </div>
+
+  <div class="card">
+    <div class="ttl">Bu parti en çok neyi gündemine aldı?</div>
+    <div class="sub" id="rankSub"></div>
+    <div class="rank" id="rank"></div>
+    <div class="hint">Bir konuya tıkla → aşağıdaki zaman grafiği o konuya odaklanır. Konu “Tümü” iken en çok konular birlikte görünür.</div>
+  </div>
+
+  <div class="card" id="chartCard">
+    <div class="ttl" id="chartTtl">Zaman içinde</div>
+    <div class="sub" id="chartSub"></div>
+    <div id="chart"></div>
+    <div class="legend" id="chartLegend"></div>
+  </div>
+
+  <div class="card" id="cezCard">
+    <div class="ttl">Söz mü, eylem mi?</div>
+    <div class="sub">Genel Kurulda <b>konuştuğu</b> konular ile önerge/tekliflerinde <b>belgeye döktüğü</b> konular ne kadar örtüşüyor</div>
+    <div id="cez"></div>
+  </div>
+
+  <footer>Kaynak: TBMM · <span id="ftDonem">—</span> · gündem-payı (%) · <a href="/">Mizan</a> · <a href="/karsilastir.html">karşılaştır</a></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script type="module">
+import { KISA, KONU_RENK, PARTI_RENK, partiRenk, AY, nf, pf, secVeSirala, icgoruYasama, notYasama, icgoruCesaret, icgoruOy, icgoruOylama, icgoruDonemler, katlanirNot, etiketKokeniNot, olcekNot, boslukNot, cesaretAyrim, CESARET_ESIK, usulNot, sayfaCanlandir, temaDegistir } from './ortak.js';
+sayfaCanlandir();
+const $ = (id) => document.getElementById(id);
+const MINDEN_M = 15;
+const groupMonths = (weeks) => { const m = new Map(); weeks.forEach((w, i) => { const ym = w.slice(0, 7); if (!m.has(ym)) m.set(ym, []); m.get(ym).push(i); }); return [...m.entries()].map(([ym, idxs]) => ({ ym, idxs })); };
+const ayLbl = (ym) => `${AY[+ym.slice(5, 7) - 1]} '${ym.slice(2, 4)}`;
+const isMobile = () => window.matchMedia('(max-width:560px)').matches;
+
+$('themeTgl').addEventListener('click', temaDegistir);
+
+const params = new URLSearchParams(location.search);
+let PARTI = params.get('p') || 'CHP';
+let AKTIF_DONEM = 28;
+let DONEM = params.get('donem') || String(AKTIF_DONEM);
+let RAW = null, aylar = [], partyTot = [], topicSeri = {}, selTopic = 'all', period = 'all';
+const MINDEN = 5;
+const api = (yol, ek = {}) => {
+  const qs = new URLSearchParams({ donem: DONEM, ...ek });
+  return `/api/ozet/${yol}?${qs}`;
+};
+
+function periodButonlari() {
+  const yillar = [...new Set(aylar.map((a) => a.slice(0, 4)))].sort();
+  const guncel = DONEM === String(AKTIF_DONEM);
+  const btn = (v, t, on) => `<button data-v="${v}"${on ? ' class="on"' : ''}>${t}</button>`;
+  $('period').innerHTML =
+    btn('all', 'Tüm dönem', period === 'all') +
+    yillar.map((y) => btn(y, y, period === y)).join('') +
+    (guncel ? btn('son12', 'Son 12 ay', period === 'son12') + btn('sonay', 'Son ay', period === 'sonay') + btn('sonhafta', 'Son hafta', period === 'sonhafta') : '');
+}
+
+async function boot() {
+  try { const r = await fetch(api('parti-ay-konu')); RAW = await r.json(); }
+  catch (e) { $('rank').innerHTML = `<div id="empty">Veriye ulaşılamadı — backend (8000) açık mı?</div>`; return; }
+  if (!RAW || !RAW.success) return;
+  if (!RAW.partiler.includes(PARTI)) PARTI = RAW.partiler[0];
+  aylar = RAW.aylar;
+  const N = aylar.length, sp = RAW.seri[PARTI] || {};
+  partyTot = new Array(N).fill(0);
+  for (const k of RAW.kategoriler) { topicSeri[k] = sp[k] || new Array(N).fill(0); for (let i = 0; i < N; i++) partyTot[i] += topicSeri[k][i]; }
+  const col = partiRenk(PARTI);
+  document.title = `Mizan · ${PARTI} · ${DONEM}. Dönem`;
+  $('ftDonem').textContent = `${DONEM}. Dönem`;
+  $('h1txt').textContent = PARTI; $('h1dot').style.background = col;
+  $('lede').innerHTML = `<b>${PARTI}</b> mecliste neyi gündemine aldı? Konu dağılımı ve zaman içindeki değişimi — zaman dilimini ve grafik için bir konuyu aşağıdan seç.`;
+  selTopic = 'all';
+  $('konuSel').innerHTML = '<option value="all">Tümü</option>' + RAW.kategoriler.filter((k) => k !== 'Diğer').map((k) => `<option value="${k}">${KISA[k]}</option>`).join('');
+  $('konuSel').value = 'all';
+  periodButonlari();
+  render();
+}
+
+async function donemSeciciKur() {
+  let m;
+  try { m = await (await fetch('/api/ozet/meta')).json(); } catch (e) { return; }
+  const list = (m?.donemler?.length ? m.donemler : [AKTIF_DONEM]).slice().sort((a, b) => b - a);
+  AKTIF_DONEM = list[0];
+  const kismiKon = new Set((m?.etl_durum ?? []).filter((x) => x.kaynak === 'konusma' && x.durum === 'kismi').map((x) => x.donem));
+  if (!list.map(String).includes(DONEM)) DONEM = String(list[0]);
+  $('donemSel').innerHTML = list.map((d) => {
+    const _k = kismiKon.has(d);
+    const _t = _k ? ' title="Bu dönemde konuşma verisi eski Meclis arşivinden geliyor; tutanak satır sarması nedeniyle SÖZ (konuşma) bazlı parti payları eksik olabilir. Kanun ve önerge verileri etkilenmez."' : '';
+    return `<option value="${d}"${String(d) === DONEM ? ' selected' : ''}${_t}>${d}. Dönem${d === AKTIF_DONEM ? ' (güncel)' : ''}${_k ? ' · söz verisi kısmi' : ''}</option>`;
+  }).join('');
+  $('donemSel').addEventListener('change', (ev) => {
+    DONEM = ev.target.value;
+    period = 'all'; selTopic = 'all';
+    yasamaYuklendi = false; oyYuklendi = false; cesaretKey = '';
+    const u = new URL(location.href); u.searchParams.set('donem', DONEM); history.replaceState(null, '', u);
+    boot();
+  });
+}
+
+function rangeIdx() {
+  const N = aylar.length;
+  if (period === 'son12') return [Math.max(0, N - 52), N];
+  if (period === 'sonay') return [Math.max(0, N - 4), N];
+  if (period === 'sonhafta') return [Math.max(0, N - 1), N];
+  if (/^\d{4}$/.test(period)) { let s = -1, e = -1; aylar.forEach((a, i) => { if (a.slice(0, 4) === period) { if (s < 0) s = i; e = i + 1; } }); return s < 0 ? [0, N] : [s, e]; }
+  return [0, N];
+}
+const periodLbl = () => period === 'all' ? 'tüm dönem' : period === 'son12' ? 'son 12 ay' : period === 'sonay' ? 'son ay' : period === 'sonhafta' ? 'son hafta' : period;
+
+function render() {
+  const [s, e] = rangeIdx();
+  const konuKapali = RAW && RAW.yayimlanabilir === false;
+  $('fldZaman').hidden = konuKapali;
+  $('fldKonu').hidden = konuKapali;
+  renderRank(s, e);
+  renderChart(s, e);
+  renderCesaret();
+  loadYasama();
+  loadOy();
+  loadDonemler();
+}
+
+function periodRange() {
+  if (/^\d{4}$/.test(period)) return [`${period}-01`, `${period}-12`];
+  if (period === 'son12') {
+    const hi = aylar.length ? aylar[aylar.length - 1].slice(0, 7) : '';
+    if (!hi) return ['', ''];
+    let [y, m] = hi.split('-').map(Number); m -= 11; while (m <= 0) { m += 12; y--; }
+    return [`${y}-${String(m).padStart(2, '0')}`, hi];
+  }
+  if (period === 'sonay' || period === 'sonhafta') {
+    const hi = aylar.length ? aylar[aylar.length - 1].slice(0, 7) : '';
+    return hi ? [hi, hi] : ['', ''];
+  }
+  return ['', ''];
+}
+
+let cesaretKey = '';
+async function renderCesaret() {
+  const key = PARTI + '|' + period + '|' + DONEM;
+  if (key === cesaretKey) return;
+  cesaretKey = key;
+  const [bas, bit] = periodRange();
+  const qs = new URLSearchParams({ parti: PARTI, donem: DONEM }); if (bas) qs.set('baslangic', bas); if (bit) qs.set('bitis', bit);
+  let d;
+  try { d = await (await fetch('/api/ozet/cesaret?' + qs)).json(); }
+  catch (e) { $('cez').innerHTML = `<div id="empty">Veriye ulaşılamadı.</div>`; return; }
+  if (key !== cesaretKey) return;
+  if (!d || !d.success) { $('cez').innerHTML = `<div id="empty">Veri yok.</div>`; return; }
+
+  if (d.yayimlanabilir === false) {
+    $('cez').innerHTML = `<div id="empty"><b>Söz-eylem kıyası bu dönemde yapılamıyor.</b> Kıyas, konuşma ve `
+      + `önerge/tekliflerin <b>konu dağılımını</b> karşılaştırır; ama bu dönemde konu etiketlerinin tamamı `
+      + `model tahmini ve doğrulanacak <b>altın etiket</b> yok. Konuşma verisi var, ancak konularının `
+      + `hangi partiye göre nasıl dağıldığı <b>doğrulanamadığı</b> için kıyas yayımlanmıyor.</div>`;
+    return;
+  }
+
+  const rows = (d.kategoriler || []).filter((x) => x.soylem + x.eylem >= 2).slice(0, 10);
+  const max = Math.max(5, ...rows.map((x) => Math.max(x.soylem, x.eylem)));
+  const kpi = `<div class="kpi"><b>%${d.ortusme ?? 0}</b><span>söz-eylem örtüşmesi · <b class="num">${d.konusmaN}</b> konuşma / <b class="num">${d.belgeN}</b> belge</span></div>`;
+
+  if (!rows.length || d.konusmaN === 0) {
+    $('cez').innerHTML = kpi + `<div id="empty">Bu dönem için konuşma verisi henüz yok${d.belgeN ? '' : '/belge verisi yetersiz'} — söz-eylem kıyası yapılamıyor.</div>`;
+    return;
+  }
+
+  const leg = `<div class="cez-leg"><span><i class="wash"></i>söylem — Genel Kurulda konuştuğu</span><span><i class="full"></i>eylem — önerge + kanun teklifi</span></div>`;
+  const rowHtml = (x) => {
+    const col = KONU_RENK[x.kategori], wash = `color-mix(in srgb, ${col} 30%, var(--card))`;
+    const f = x.fark;
+    const tabanTamam = (x.konusma ?? 0) >= 30 && (x.belge ?? 0) >= 20;
+    const yon = tabanTamam ? cesaretAyrim(f) : null;
+    const badge = yon === 'soz' ? `<div class="cbadge talk">🗣 söz +${Math.round(-f)}</div>`
+      : yon === 'eylem' ? `<div class="cbadge act">✎ eylem +${Math.round(f)}</div>`
+      : `<div class="cbadge mid" title="fark ${CESARET_ESIK} puanın altında ya da bu satırın örneklem tabanı yetersiz — bir yöne işaret edilmiyor">ayrım yok</div>`;
+    return `<div class="crow">
+      <div class="cl"><span class="d party-dot" style="background:${col}"></span><span class="t">${KISA[x.kategori]}</span></div>
+      <div class="cbar">
+        <div class="ch l"><span class="cn">%${x.soylem}</span><i style="width:${x.soylem / max * 100}%;background:${wash};border:1px solid ${col}55"></i></div>
+        <div class="ch r"><i style="width:${x.eylem / max * 100}%;background:${col}"></i><span class="cn">%${x.eylem}</span></div>
+      </div>${badge}</div>`;
+  };
+  const note = katlanirNot(
+    `<b>Nasıl okunur</b> — <b>adet değil</b>, her kaynağın kendi <b>gündem-payı (%)</b> kıyaslanır`,
+    `Konuşma ile önerge/teklif farklı araçlardır; iki çubuk asla toplanmaz. Örtüşme %100 = konuştuğu her konuyu aynı oranda belgeye döktü. Parlamenter araçlara erişim role göre değişir — yürütmeyi elinde tutan parti kanun/yürütme yolunu, tutmayan partiler denetim (önerge) yolunu daha çok kullanabilir. Düşük ya da yüksek örtüşme bir tutum değil, araç erişimini de yansıtır. Satır rozeti yalnız söylem–eylem farkı <b>±${CESARET_ESIK} puanı</b> aştığında ve örneklem tabanı yeterliyse bir yöne işaret eder; aksi hâlde “<b>ayrım yok</b>” yazar — bu “iki oran eşittir” demek değil, <b>bu kartın ayrım iddia etmediği</b> anlamına gelir.${d.yeterli ? '' : '<br><b>Örneklem düşük</b> — bu dönemde konuşma/belge sayısı az, oranlar oynak olabilir.'}`);
+  const ic = icgoruCesaret(d, PARTI);
+  $('cez').innerHTML = (ic ? `<div class="kozet">${ic}</div>` : '') + kpi + leg + rows.map(rowHtml).join('') + note;
+}
+function chartKeys(s, e) {
+  if (selTopic !== 'all') return [selTopic];
+  const pay = (k) => { let n = 0, d = 0; for (let i = s; i < e; i++) { n += topicSeri[k][i]; d += partyTot[i]; } return d ? n / d * 100 : 0; };
+  return RAW.kategoriler.filter((k) => k !== 'Diğer').map((k) => ({ k, pct: pay(k) })).filter((x) => x.pct > 0).sort((a, b) => b.pct - a.pct).slice(0, 6).map((x) => x.k);
+}
+
+function renderRank(s, e) {
+  const pay = (k) => { let n = 0, d = 0; for (let i = s; i < e; i++) { n += topicSeri[k][i]; d += partyTot[i]; } return d ? n / d * 100 : 0; };
+  const real = RAW.kategoriler.filter((k) => k !== 'Diğer').map((k) => ({ k, pct: pay(k) })).filter((x) => x.pct > 0).sort((a, b) => b.pct - a.pct);
+  const dPct = pay('Diğer');
+  $('rankSub').textContent = `${PARTI} · ${periodLbl()} · gündeminin % kaçı hangi konu`;
+  if (RAW.yayimlanabilir === false) {
+    $('rank').innerHTML = `<div id="empty"><b>Konu dağılımı bu dönemde yayımlanmıyor.</b> Etiketlerin tamamı `
+      + `model tahmini ve doğrulanacak <b>altın etiket</b> (belge muhatabından türeyen kesin kategori) yok — `
+      + `sınıflandırıcının bu dönemdeki hatası ölçülemediği için konu payları gösterilmiyor. `
+      + `Bu partinin teklif/önerge <b>sayıları</b> aşağıdaki kanun kartında görünmeye devam ediyor.</div>`;
+    return;
+  }
+  if (!real.length && dPct === 0) { $('rank').innerHTML = `<div id="empty">Bu dönemde veri yok.</div>`; return; }
+  const max = real.length ? real[0].pct : 1;
+  const row = (x, dim) => `<div class="rrow${dim ? ' diger' : ''}${x.k === selTopic ? ' sel' : ''}" data-k="${x.k}">
+      <div class="p"><span class="d party-dot" style="background:${dim ? 'var(--diger)' : KONU_RENK[x.k]}"></span>${KISA[x.k]}</div>
+      <div class="track"><i style="width:${Math.max(2, x.pct / max * 100)}%;background:${dim ? 'var(--diger)' : KONU_RENK[x.k]}"></i></div>
+      <div class="v num">${x.pct.toFixed(1)}<small>%</small></div></div>`;
+  const rankNot = katlanirNot(
+    `Bu paylar <b>önerge ve kanun tekliflerinden</b> hesaplanır — konuşmalar dahil <b>değildir</b>.`,
+    olcekNot(max) + ' ' + etiketKokeniNot(RAW?.etiket_kaynagi)
+      + ` Payda: ${PARTI} adına bu dönemde kayda geçen ${nf(partyTot.slice(s, e).reduce((a, b) => a + b, 0))} belge`
+      + (RAW?.parti_tarihsiz?.[PARTI]
+          ? ` (${PARTI} adına ${nf(RAW.parti_tarihsiz[PARTI])} belge daha var ama TBMM kaydındaki tarihleri`
+            + ` değiştirilen eski kanuna ait olduğu için zaman eksenine konamıyor ve bu paydaya girmiyor)`
+          : '')
+      + ` (soru önergesi + kanun teklifi, TBMM Yasama). Genel Kurul konuşmaları bu paydada yoktur:`
+      + ` konuşmanın konu etiketi doğrulanabilir değil, bu yüzden konu payına katılmaz.`
+      + ` “Diğer” = tek konuya bağlanamayan kayıtlar.`);
+  $('rank').innerHTML = real.map((x) => row(x, false)).join('') + (dPct > 0 ? row({ k: 'Diğer', pct: dPct }, true) : '') + rankNot;
+  $('rank').querySelectorAll('.rrow').forEach((r) => r.addEventListener('click', () => { selTopic = r.dataset.k; $('konuSel').value = selTopic; render(); }));
+}
+
+function renderChart(s, e) {
+  const gizle = RAW && RAW.yayimlanabilir === false;
+  $('chartCard').hidden = gizle;
+  if (gizle) return;
+  const keys = chartKeys(s, e), weeks = aylar.slice(s, e), N = weeks.length, tek = keys.length === 1;
+  $('chartTtl').innerHTML = tek ? `<span style="color:${KONU_RENK[keys[0]]}">●</span> ${KISA[keys[0]]} — zaman içinde` : 'Gündem konuları, zaman içinde';
+  $('chartSub').textContent = `${PARTI} gündem payı, ${isMobile() ? 'ay ay' : 'hafta hafta'} · ${periodLbl()}${tek ? '' : ' · en çok 6 konu'}`;
+  $('chartLegend').innerHTML = keys.map((k) => `<span><i style="background:${KONU_RENK[k]}"></i>${KISA[k]}</span>`).join('');
+  if (isMobile()) return renderChartBars(keys, s, e);
+  const series = keys.map((k) => ({ k, vals: weeks.map((_, i) => { const gi = s + i, d = partyTot[gi]; return d < MINDEN ? null : topicSeri[k][gi] / d * 100; }) }));
+  const W = 760, H = 230, M = { l:30, r:12, t:12, b:26 };
+  const pw = W - M.l - M.r, ph = H - M.t - M.b;
+  const xs = (i) => M.l + (N > 1 ? i / (N - 1) : 0.5) * pw;
+  let max = 5; series.forEach((se) => se.vals.forEach((v) => { if (v != null && v > max) max = v; })); max = Math.ceil(max / 5) * 5;
+  const ys = (v) => M.t + ph - (v / max) * ph;
+  let g = '';
+  for (let t = 0; t <= 2; t++) { const val = max * t / 2, y = ys(val).toFixed(1);
+    g += `<line x1="${M.l}" y1="${y}" x2="${W - M.r}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    g += `<text x="0" y="${(+y - 3).toFixed(1)}" fill="var(--muted)" font-size="10">%${Math.round(val)}</text>`; }
+  let prevM = '';
+  weeks.forEach((a, i) => { const ym = a.slice(0, 7); if (ym === prevM) return; prevM = ym; const mo = +a.slice(5, 7); const x = xs(i).toFixed(1);
+    if (mo === 1 || i === 0) g += `<line x1="${x}" y1="${M.t}" x2="${x}" y2="${M.t + ph}" stroke="var(--line-2)" stroke-width="1"/>`;
+    if (N > 40 && mo % 2 === 0) return;
+    g += `<text x="${x}" y="${H - 6}" fill="var(--muted)" font-size="9.5" text-anchor="middle">${AY[mo - 1]}${mo === 1 || i === 0 ? "'" + a.slice(2, 4) : ''}</text>`; });
+  const seg = (vals, color, w) => { let out = '', run = [];
+    const flush = () => { if (run.length > 1) out += `<polyline points="${run.join(' ')}" fill="none" stroke="${color}" stroke-width="${w}" opacity=".93" stroke-linejoin="round"/>`;
+      else if (run.length === 1) { const [cx, cy] = run[0].split(','); out += `<circle cx="${cx}" cy="${cy}" r="${w}" fill="${color}"/>`; } run = []; };
+    vals.forEach((v, i) => { if (v == null) flush(); else run.push(`${xs(i).toFixed(1)},${ys(v).toFixed(1)}`); }); flush(); return out; };
+  const lines = series.map((se) => seg(se.vals, KONU_RENK[se.k], tek ? 2 : 1.7)).join('');
+  const kapsamEtiket = `${PARTI} · gündem payı (%) · ${periodLbl()} · Kaynak: TBMM`;
+  $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H + 16}">${g}${lines}`
+    + `<line class="cross" x1="0" y1="${M.t}" x2="0" y2="${M.t + ph}" stroke="var(--petrol)" stroke-width="1" opacity="0" stroke-dasharray="4 3"/>`
+    + `<text x="${M.l}" y="${H + 11}" fill="var(--muted)" font-size="10">${kapsamEtiket}</text></svg>`;
+  bosNotBas(series.map((se) => se.vals), MINDEN, 'hafta');
+  const svg = $('chart').querySelector('svg'), tip = $('tip');
+  svg.addEventListener('mousemove', (ev) => { if (N < 2) return;
+    const r = svg.getBoundingClientRect();
+    let i = Math.round((((ev.clientX - r.left) / r.width) * W - M.l) / pw * (N - 1)); i = Math.max(0, Math.min(N - 1, i));
+    const x = M.l + i / (N - 1) * pw, cr = svg.querySelector('.cross'); cr.setAttribute('x1', x); cr.setAttribute('x2', x); cr.setAttribute('opacity', '.9');
+    const rows = series.map((se) => [se.k, se.vals[i]]).filter((r2) => r2[1] != null).sort((a, b) => b[1] - a[1]);
+    tip.innerHTML = `<b>${weeks[i]}</b>` + (rows.length ? rows.map(([k, v]) => `<div class="r"><span style="color:${KONU_RENK[k]}">■ ${KISA[k]}</span> <b>%${v.toFixed(1)}</b></div>`).join('') : '<div>—</div>');
+    tip.style.display = 'block'; tip.style.left = Math.min(ev.clientX + 15, innerWidth - 210) + 'px'; tip.style.top = Math.min(ev.clientY + 15, innerHeight - 150) + 'px';
+  });
+  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; svg.querySelector('.cross').setAttribute('opacity', '0'); });
+}
+
+function bosNotBas(seriler, esik, birim) {
+  const bn = boslukNot(seriler, esik, birim);
+  let e = document.getElementById('bosNot');
+  if (!e) { e = document.createElement('p'); e.id = 'bosNot'; e.className = 'cnote'; $('chart').after(e); }
+  e.innerHTML = bn; e.hidden = !bn;
+}
+
+function renderChartBars(keys, s, e) {
+  const months = groupMonths(aylar.slice(s, e));
+  if (keys.length === 1) {
+    const k = keys[0], col = KONU_RENK[k];
+    const rows = months.map(({ ym, idxs }) => { let n = 0, d = 0; idxs.forEach((i) => { const gi = s + i; n += topicSeri[k][gi]; d += partyTot[gi]; }); return { ym, pct: d >= MINDEN_M ? n / d * 100 : null }; });
+    const max = Math.max(1, ...rows.filter((r) => r.pct != null).map((r) => r.pct));
+    $('chart').innerHTML = `<div class="mbars">` + rows.map((r) => r.pct == null
+      ? `<div class="mbrow muted"><div class="ml">${ayLbl(r.ym)}</div><div class="mtrack"></div><div class="mv">—</div></div>`
+      : `<div class="mbrow"><div class="ml">${ayLbl(r.ym)}</div><div class="mtrack"><i style="width:${Math.max(2, r.pct / max * 100)}%;background:${col}"></i></div><div class="mv num">%${r.pct.toFixed(1)}</div></div>`).join('') + `</div>`;
+    bosNotBas([rows.map((r) => r.pct)], MINDEN_M, 'ay');
+    return;
+  }
+  const series = keys.map((k) => ({ k, vals: months.map(({ idxs }) => { let n = 0, d = 0; idxs.forEach((i) => { const gi = s + i; n += topicSeri[k][gi]; d += partyTot[gi]; }); return d >= MINDEN_M ? n / d * 100 : null; }) }));
+  const gmax = Math.max(1, ...series.flatMap((se) => se.vals.filter((v) => v != null)));
+  $('chart').innerHTML = series.map((se) => `<div class="sm"><div class="sml"><span class="d party-dot" style="background:${KONU_RENK[se.k]}"></span>${KISA[se.k]}</div>` +
+    `<div class="smbars">${se.vals.map((v, i) => `<span class="smb" title="${ayLbl(months[i].ym)}: ${v == null ? '—' : '%' + v.toFixed(1)}" style="height:${v == null ? 0 : Math.max(4, v / gmax * 100)}%;background:${KONU_RENK[se.k]};opacity:${v == null ? .12 : 1}"></span>`).join('')}</div></div>`).join('');
+  bosNotBas(series.map((se) => se.vals), MINDEN_M, 'ay');
+}
+
+$('konuSel').addEventListener('change', (ev) => { selTopic = ev.target.value; render(); });
+$('period').addEventListener('click', (ev) => {
+  const b = ev.target.closest('button[data-v]');
+  if (!b) return;
+  $('period').querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on'); period = b.dataset.v; render();
+});
+let _wasM = isMobile();
+addEventListener('resize', () => { const m = isMobile(); if (m !== _wasM) { _wasM = m; render(); } });
+
+let yasamaYuklendi = false;
+async function loadYasama() {
+  if (yasamaYuklendi) return;
+  yasamaYuklendi = true;
+  let j;
+  try { j = await (await fetch(api('yasama'))).json(); } catch (e) { return; }
+  if (!j || !j.success || !j.partiler.length) return;
+  const me = j.partiler.find((r) => r.parti === PARTI);
+  const el = $('yasama');
+  if (!me) { el.innerHTML = `<div id="empty">Bu partinin kayıtlı kanun teklifi yok.</div>`; return; }
+  const enCok = Math.max(...j.partiler.map((r) => r.toplam));
+  const sirali = secVeSirala(j.partiler, { buyukluk: (r) => r.toplam, olcu: (r) => r.kanunlasti, n: 8 });
+  const ic = icgoruYasama(j, PARTI);
+  el.innerHTML =
+    (ic ? `<div class="kozet">${ic}</div>` : '') +
+    `<div class="ykarlbl">${sirali.length < j.partiler.length ? `En çok teklif veren ${sirali.length} parti` : 'Tüm partiler'} — çubuk: verilen teklif sayısı · sayı: verilen → kanunlaşan${me.gundemde ? ` · ${PARTI}: ${nf(me.gundemde)} teklif gündemde` : ''}</div>` +
+    sirali.map((r) => {
+      const o = r.toplam ? (100 * r.kanunlasti / r.toplam) : 0;
+      const w = enCok ? (100 * r.toplam / enCok) : 0;
+      const renk = partiRenk(r.parti);
+      return `<div class="ykar${r.parti === PARTI ? ' me' : ''}">
+        <span class="yp">${r.parti}</span>
+        <span class="ytrack"><span class="yfill" style="width:${w.toFixed(1)}%;background:${renk}"></span></span>
+        <span class="yn">${nf(r.toplam)} → <b style="color:${r.kanunlasti ? 'var(--petrol-ink)' : 'var(--muted)'}">${nf(r.kanunlasti)}</b></span>
+      </div>`;
+    }).join('') +
+    (notYasama(j) ? `<div class="cnote">${notYasama(j)}</div>` : '');
+}
+
+let oyYuklendi = false;
+async function loadOy() {
+  if (oyYuklendi) return;
+  oyYuklendi = true;
+  let j;
+  try { j = await (await fetch(api('oy'))).json(); } catch (e) { return; }
+  const ic = icgoruOy(j, PARTI);
+  if (!ic) {
+    if ((j.partiler ?? []).length === 0 && DONEM !== String(AKTIF_DONEM)) {
+      $('oyCard').hidden = false;
+      let agg = '', aggVar = false;
+      try {
+        const oj = await (await fetch(api('oylama'))).json();
+        const ic = icgoruOylama(oj);
+        if (ic) { agg = `<div class="ykarlbl">Bu dönemde açık oylama etkinliği — <b>tüm meclis</b>, parti ayrımı olmadan:</div><div class="kozet">${ic}</div>`; aggVar = true; }
+      } catch (e) {  }
+      $('oy').innerHTML = agg
+        + `<div id="empty"><b>Hangi vekilin nasıl oy verdiği bu dönemde çıkarılamıyor.</b> `
+        + (aggVar
+            ? `Yukarıdaki açık oylama sayıları tutanak özet kutularından elde edildi; ama `
+            : `Bu dönemde açık oylamaların vekil bazlı dökümü çıkarılamıyor: `)
+        + `TBMM 26 ve 27. dönemlerde oy cetvelini tutanağa <b>taranmış görüntü</b> olarak ekledi ve `
+        + `belgede metin katmanı bulunmadığı için vekil bazlı döküm elde edilemiyor. Cetvel 28. dönemde `
+        + `metin olarak yayımlanıyor; vekil bazlı oy verisi o yüzden yalnız 28. döneme ait.</div>`;
+    }
+    return;
+  }
+  const uygun = j.partiler
+    .map((r) => ({ ...r, kul: r.kabul + r.ret + r.cekimser }))
+    .filter((r) => r.kul >= 100);
+  const elenen = j.partiler
+    .map((r) => ({ ...r, kul: r.kabul + r.ret + r.cekimser }))
+    .filter((r) => r.kul < 100 && r.kul > 0)
+    .sort((a, b) => b.kul - a.kul);
+  const sirali = secVeSirala(uygun, { buyukluk: (r) => r.kul, olcu: (r) => r.ret / r.kul, n: 10 });
+  $('oy').innerHTML =
+    `<div class="kozet">${ic}</div>` +
+    `<div class="ykarlbl">${sirali.length < j.partiler.length ? `${sirali.length} parti` : 'Tüm partiler'} — çubuk: kullanılan oyda <b>ret payı</b> · sağda: <b>katılım</b> (oylamalara katılma oranı)</div>` +
+    sirali.map((r) => {
+      const pay = 100 * r.ret / r.kul;
+      const firsat = r.kul + (r.katilmadi ?? 0);
+      const katilim = firsat > 0 ? 100 * r.kul / firsat : 0;
+      return `<div class="ykar${r.parti === PARTI ? ' me' : ''}">
+        <span class="yp">${r.parti}</span>
+        <span class="ytrack"><span class="yfill" style="width:${pay.toFixed(1)}%;background:${partiRenk(r.parti)}"></span></span>
+        <span class="yn">%${pf(pay)} ret <small style="color:var(--muted)">· %${pf(katilim)} katılım</small></span>
+      </div>`;
+    }).join('') +
+    katlanirNot(
+      `<b>Nasıl okunur</b> — bu bir <b>oy karnesi değildir</b>; yalnız açık/elektronik oylananları kapsar`,
+      `Kanunların <b>çoğu işaretle (el kaldırarak) oylanır ve kimin nasıl oy verdiği hiç kayda geçmez</b>. Burada yalnız açık/elektronik oylananlar var: kayda geçen <b>${nf(j.toplam_oylama)}</b> oylamanın <b>${nf(j.oylama_n)}</b> tanesinde vekil dökümü bulunabildi. Bu korpus <b>anlaşma onaylarına yanlıdır</b>. <b>Ret payı</b> yalnız kullanılan oyu sayar (kabul+ret+çekimser); <b>katılım</b> ise oylamaya katılma oranıdır (katılmayanlar dahil) — devamsızlık partiye göre çok değişir, iki sayı birlikte okunmalı. ${usulNot('cekimser')} Her sayı, TBMM'nin Basılmış tutanağındaki cetvelin kendi özet kutusuyla <b>birebir doğrulanmıştır</b>; doğrulamayı geçmeyen oylama buraya hiç alınmadı.${elenen.length ? ` <b>${elenen.length} parti</b> bu listede yok: kullanılan oyu 100'ün altında kaldığı için yüzdeleri gürültüdür (${elenen.map((r) => `${r.parti} ${nf(r.kul)} oy`).join(' · ')}). Bu, o partilerin oy vermediği anlamına gelmez; ölçünün onlar için güvenilir olmadığı anlamına gelir.` : ''}`);
+  $('oyCard').hidden = false;
+}
+
+let donemKey = '';
+async function loadDonemler() {
+  if (donemKey === PARTI) return;
+  donemKey = PARTI;
+  let j;
+  try { j = await (await fetch(`/api/ozet/donem-karsilastir?parti=${encodeURIComponent(PARTI)}`)).json(); }
+  catch (e) { return; }
+  if (donemKey !== PARTI) return;
+  const ic = icgoruDonemler(j, PARTI);
+  const donemler = (j?.donemler ?? []).filter((d) => d.n >= 300);
+
+  const atlanan = j?.atlanan ?? [];
+  if (atlanan.length && donemler.length < 2) {
+    $('donemCard').hidden = false;
+    $('donemK').innerHTML =
+      `<div id="empty">Dönemler arası konu kıyası için <b>${atlanan.map((a) => a.donem + '. dönem').join(' ve ')}</b> ` +
+      `etiket doğrulaması bekleniyor — o dönemlerin konu payları henüz yayımlanmıyor. ` +
+      `Teklif/önerge sayıları ve oy verileri yukarıdaki kartlarda görünür.</div>`;
+    return;
+  }
+  if (!ic || donemler.length < 2) { $('donemCard').hidden = true; return; }
+
+  const tumK = [...new Set(donemler.flatMap((d) => Object.keys(d.kategoriler)))];
+  const siraliK = tumK
+    .map((k) => { const p = donemler.map((d) => d.kategoriler[k] ?? 0); return { k, yay: Math.max(...p) - Math.min(...p) }; })
+    .sort((a, b) => b.yay - a.yay).slice(0, 5);
+  const enBuyukPay = Math.max(1, ...siraliK.flatMap((x) => donemler.map((d) => d.kategoriler[x.k] ?? 0)));
+
+  $('donemK').innerHTML =
+    `<div class="kozet">${ic}</div>` +
+    `<div class="ykarlbl">Çubuk: o dönemdeki <b>gündem payı</b> · en çok ayrışan 5 konu</div>` +
+    siraliK.map(({ k }) => {
+      const col = KONU_RENK[k] ?? 'var(--muted)';
+      return `<div class="sm"><div class="sml"><span class="d party-dot" style="background:${col}"></span>${KISA[k] ?? k}</div>` +
+        donemler.map((d) => {
+          const p = d.kategoriler[k] ?? 0;
+          return `<div class="mbrow"><span class="ml">${d.donem}. D</span>` +
+            `<span class="mtrack"><i style="width:${Math.max(1, 100 * p / enBuyukPay)}%;background:${col}"></i></span>` +
+            `<span class="mv">%${pf(p)}</span></div>`;
+        }).join('') + `</div>`;
+    }).join('') +
+    katlanirNot(
+      `<b>Nasıl okunur</b> — <b>adet değil pay (%)</b>; dönemler farklı uzunlukta`,
+      `Dönemler <b>farklı uzunlukta</b> (${donemler.map((d) => `${d.donem}. D: ${pf(d.yil)} yıl`).join(' · ')}${donemler.some((d) => d.donem === j.aktif_donem) ? ` — ${j.aktif_donem}. Dönem hâlâ sürüyor` : ''}); bu yüzden pay kıyaslanır — uzun dönemde her parti daha çok belge üretir, bu bir gündem değişimi değildir. Pay <b>gündemin dağılımını</b> gösterir, çabanın miktarını değil: bir konunun payı düşerken adedi artmış olabilir. Payda: sınıflandırılmış belgeler ('Diğer' hariç). Farkın istatistiksel olarak ayırt edilemediği konularda cümle <b>yazılmaz</b>.`);
+  $('donemCard').hidden = false;
+}
+
+donemSeciciKur().then(boot);
+</script>
+</body>
+</html>

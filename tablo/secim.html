@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mizan · Seçim sonuçları</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; }
+
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 18px;
+    background:color-mix(in srgb, var(--paper) 86%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.1rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); }
+
+  .nav-r { display:flex; gap:8px; align-items:center; min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .nav-r::-webkit-scrollbar { display:none; }
+  .nav-r a { font-size:.8rem; font-weight:700; text-decoration:none; color:var(--petrol-ink); padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .theme-tgl { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.9rem; cursor:pointer; }
+
+  .wrap { max-width:760px; margin:0 auto; padding:18px 18px 60px; }
+  .back { display:inline-block; font-size:.82rem; color:var(--muted); text-decoration:none; margin-bottom:14px; }
+  .back:hover { color:var(--petrol); }
+  h1 { font-family:var(--serif); font-size:1.7rem; margin:0 0 6px; }
+  .lede { color:var(--muted); font-size:.92rem; margin:0 0 18px; }
+  .ara { display:flex; gap:10px; align-items:end; margin-bottom:18px; flex-wrap:wrap; }
+  .fld label { display:block; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); margin-bottom:4px; }
+  select { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink); }
+  .ozet-satir { display:flex; flex-wrap:wrap; gap:18px; margin-bottom:16px; }
+  .ozet-item .n { font-family:var(--serif); font-size:1.3rem; font-weight:600; }
+  .ozet-item .l { font-size:.74rem; color:var(--muted); }
+  .grup-baslik { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:16px 0 6px; }
+  .grup-baslik:first-of-type { margin-top:4px; }
+  .prow { display:grid; grid-template-columns:126px 1fr 64px 92px; align-items:center; gap:10px; padding:7px 0; }
+  .prow .ad { font-size:.88rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .prow .sandalye { font-size:.92rem; font-weight:700; color:var(--ink); text-align:right; font-variant-numeric:tabular-nums; }
+  .prow .oy { font-size:.72rem; color:var(--muted); text-align:right; font-variant-numeric:tabular-nums; }
+  .diger-row { display:flex; align-items:baseline; justify-content:space-between; gap:10px; padding:10px 0; border-top:1px dashed var(--line); margin-top:4px; font-size:.84rem; color:var(--muted); }
+  .diger-row b { color:var(--ink); font-weight:600; }
+  .tumu-btn { font-size:.76rem; font-weight:700; color:var(--petrol-ink); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; }
+  .tumu-liste { display:none; margin-top:8px; }
+  .tumu-liste.acik { display:block; }
+  .tumu-liste .prow { grid-template-columns:126px 1fr 92px; }
+  .kapsam-not { font-size:.78rem; color:var(--muted); margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+  #empty { color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="wordmark" aria-hidden="true"></span>
+  <div class="nav-r"><button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button></div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="/">← Ana sayfa</a>
+  <h1>Milletvekili genel seçim sonuçları</h1>
+  <p class="lede">Yüksek Seçim Kurulu'nun (YSK) kendi sonuç sisteminden — hangi parti <b>kaç sandalye</b> kazandı, hangi parti <b>kaç oy</b> aldı. Yorum yok, YSK'nin kendi rakamları.</p>
+
+  <div class="ara">
+    <div class="fld">
+      <label for="donemSec">Seçim</label>
+      <select id="donemSec"><option value="">Yükleniyor…</option></select>
+    </div>
+  </div>
+
+  <div id="govde"><div id="empty">Yükleniyor…</div></div>
+</div>
+
+<script type="module">
+import { partiRenk, nf, bar, sayfaCanlandir, temaDegistir } from './ortak.js';
+sayfaCanlandir();
+const $ = (id) => document.getElementById(id);
+
+$('themeTgl').addEventListener('click', temaDegistir);
+
+const params = new URLSearchParams(location.search);
+let DONEM = params.get('donem') || '';
+
+async function veriCek(donem) {
+  const u = new URL('/api/ozet/secim-sonucu', location.origin);
+  if (donem) u.searchParams.set('donem', donem);
+  const r = await fetch(u);
+  return r.json();
+}
+
+function render(j) {
+  const govde = $('govde');
+  if (!j.success || !j.secim) {
+    govde.innerHTML = `<div id="empty">${j.sebep || 'Seçim sonucu bulunamadı.'}</div>`;
+    return;
+  }
+  const s = j.secim;
+
+  const sandalyeBiliniyor = s.sandalye_biliniyor !== false;
+  const maxSandalye = Math.max(...s.partiler.map((p) => p.sandalye || 0), 1);
+  const maxOran = Math.max(...s.partiler.map((p) => p.oran || 0), 1);
+  const belirginSatirlar = s.partiler.map((p) => `
+    <div class="prow">
+      <div class="ad">${p.parti}</div>
+      ${sandalyeBiliniyor ? bar(p.sandalye || 0, maxSandalye, partiRenk(p.parti)) : bar(p.oran || 0, maxOran, partiRenk(p.parti))}
+      ${sandalyeBiliniyor ? `<div class="sandalye">${nf(p.sandalye)}</div>` : ''}
+      <div class="oy">%${(p.oran ?? 0).toLocaleString('tr-TR')} · ${nf(p.oy)} oy</div>
+    </div>
+  `).join('');
+
+  const digerBaslik = sandalyeBiliniyor ? 'sandalye kazanamadı' : '%1\'in altında oy aldı';
+  const digerHtml = s.diger ? `
+    <div class="diger-row">
+      <span>+ <b>${s.diger.n}</b> parti/bağımsız aday — ${digerBaslik}</span>
+      <span><b>%${s.diger.oran.toLocaleString('tr-TR')}</b> oy (${nf(s.diger.oy)})</span>
+    </div>
+    <button class="tumu-btn" id="tumuBtn" type="button">Tümünü göster (${s.tum_partiler.length} parti/bağımsız)</button>
+    <div class="tumu-liste" id="tumuListe">
+      ${s.tum_partiler.map((p) => `
+        <div class="prow">
+          <div class="ad">${p.parti}</div>
+          ${bar(p.oran || 0, s.tum_partiler[0].oran || 1, partiRenk(p.parti))}
+          <div class="oy">%${(p.oran ?? 0).toLocaleString('tr-TR')} · ${nf(p.oy)}${p.sandalye ? ` · ${p.sandalye} sandalye` : ''}</div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
+  govde.innerHTML = `
+    <div class="card">
+      <div class="ttl">${s.secim_adi || ('Dönem ' + s.donem)}</div>
+      <div class="sub">${s.tarih}</div>
+      <div class="ozet-satir">
+        <div class="ozet-item"><div class="n">${nf(s.secmen_sayisi)}</div><div class="l">Kayıtlı seçmen</div></div>
+        <div class="ozet-item"><div class="n">%${(s.katilma_orani ?? 0).toFixed(2)}</div><div class="l">Katılım oranı</div></div>
+        <div class="ozet-item"><div class="n">${nf(s.gecerli_oy_toplami)}</div><div class="l">Geçerli oy</div></div>
+        <div class="ozet-item"><div class="n">${s.toplam_sandalye != null ? nf(s.toplam_sandalye) : '—'}</div><div class="l">Toplam sandalye${s.toplam_sandalye == null ? ' (bilinmiyor)' : ''}</div></div>
+      </div>
+      <div class="grup-baslik">${sandalyeBiliniyor ? 'Sandalye kazanan partiler' : 'En çok oy alan partiler (sandalye verisi bu kaynakta yok)'}</div>
+      ${belirginSatirlar}
+      ${digerHtml}
+      <div class="kapsam-not">${s.kapsam_notu}${s.kaynak_url ? ` <a href="${s.kaynak_url}" target="_blank" rel="noopener">Kaynağa git →</a>` : ''}</div>
+    </div>
+  `;
+
+  $('tumuBtn')?.addEventListener('click', () => {
+    const el = $('tumuListe'), btn = $('tumuBtn');
+    const acik = el.classList.toggle('acik');
+    btn.textContent = acik ? 'Gizle' : `Tümünü göster (${s.tum_partiler.length} parti/bağımsız)`;
+  });
+}
+
+async function baslat() {
+  const meta = await veriCek(DONEM);
+  const sec = $('donemSec');
+  if (!meta.donemler || !meta.donemler.length) {
+    sec.innerHTML = '<option value="">Veri yok</option>';
+    render(meta);
+    return;
+  }
+  DONEM = DONEM && meta.donemler.includes(Number(DONEM)) ? Number(DONEM) : meta.donemler[0];
+  sec.innerHTML = meta.donemler.map((d) => `<option value="${d}">${d}. Dönem</option>`).join('');
+  sec.value = String(DONEM);
+  render(meta);
+  sec.addEventListener('change', async () => {
+    DONEM = sec.value;
+    const u = new URL(location.href);
+    u.searchParams.set('donem', DONEM);
+    history.replaceState(null, '', u);
+    render(await veriCek(DONEM));
+  });
+}
+
+baslat();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Bağımlılıklar
+node_modules/
+
+# Veritabanı ve Yerel Depolama (backend-node/storage)
+**/storage/*
+!**/storage/topic-model.json
+!**/storage/admin_proxy.json
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# Çevre Değişkenleri
+.env
+.env.*
+!.env.example
+
+# Loglar ve Geçici Dosyalar
+*.log
+.claude/
+*.tmp.*
+tmp_*
+_tmp_*
+scratch_*

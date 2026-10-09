@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mizan · Bir kanunun hikâyesi</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+
+  :root { --faint:#7288ae; --ret:#111844; --cekimser:#eae0cf; --ret-wash:#7288ae; }
+  :root[data-theme="light"] { --faint:#7288ae; --ret:#111844; --cekimser:#eae0cf; --ret-wash:#7288ae; }
+  :root[data-theme="dark"] { --faint:#4b5694; --ret:#eae0cf; --cekimser:#111844; --ret-wash:#4b5694; }
+
+  @keyframes fadeUp { from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+  @media (prefers-reduced-motion:no-preference) { .halka, .ok { animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both; } }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; }
+
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 18px;
+    background:color-mix(in srgb, var(--paper) 86%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.1rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); }
+
+  .nav-r { display:flex; gap:8px; align-items:center; min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .nav-r::-webkit-scrollbar { display:none; }
+  .nav-r a { font-size:.8rem; font-weight:700; text-decoration:none; color:var(--petrol-ink); padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .theme-tgl { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.9rem; cursor:pointer; }
+
+  .wrap { max-width:820px; margin:0 auto; padding:22px 18px 60px; }
+  .back { text-decoration:none; color:var(--petrol); font-weight:700; font-size:.8rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:8px 0 0; }
+  .lede { color:var(--ink-2); font-size:.95rem; margin:10px 0 0; max-width:60ch; }
+  .lede b { color:var(--ink); font-weight:600; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:14px; margin:22px 0 6px; align-items:flex-end; }
+
+  .fld { min-width:0; }
+  .fld > label { display:block; font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; }
+  select { font-family:var(--sans); font-size:.9rem; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:8px 11px; cursor:pointer; min-width:190px; max-width:100%; }
+  input[type=search] { font-family:var(--sans); font-size:.9rem; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:8px 11px; min-width:180px; max-width:100%; }
+  input[type=search]::placeholder { color:var(--muted); }
+  .vkil { font-size:.68rem; font-weight:600; color:var(--petrol-ink); background:var(--petrol-wash); padding:2px 7px; border-radius:999px; margin-left:6px; }
+  .hint { font-size:.8rem; color:var(--muted); }
+
+  .card { padding:16px 16px 12px; }
+  #empty { color:var(--muted); padding:18px 2px; font-size:.9rem; }
+
+  .vk { border-top:1px solid var(--line-2); }
+  .vk:first-child { border-top:0; }
+  .vkhead { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; padding:11px 4px; cursor:pointer; background:none; border:none; width:100%; text-align:left; font:inherit; color:inherit; }
+  .vkhead:hover .vkad { color:var(--petrol); }
+  .vkad { font-size:.92rem; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .vkad .d { width:10px; height:10px; border-radius:50%; flex:none; }
+  .vkparti { font-size:.72rem; font-weight:600; color:var(--muted); }
+  .vkdegis { margin-left:5px; font-weight:600; color:var(--ret); }
+  .oparti { font-size:.62rem; font-weight:700; color:var(--muted); margin-left:6px; }
+  .vkmeta { display:flex; align-items:center; gap:10px; }
+
+  .vksay { font-size:.74rem; font-weight:700; color:var(--ink-2); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .vksay small { font-weight:500; color:var(--muted); }
+  .vkbar { display:flex; height:16px; width:150px; border-radius:4px; overflow:hidden; background:var(--line-2); }
+  .vkbar i { height:100%; display:block; }
+  .vkbar i.kabul { background:var(--petrol); } .vkbar i.ret { background:var(--ret); }
+  .drow { display:flex; gap:8px; align-items:baseline; padding:4px 0; font-size:13px; flex-wrap:wrap; border-top:1px solid var(--line); }
+  .drow:first-of-type { border-top:0; }
+  .dtur { font-size:11px; padding:1px 6px; border:1px solid var(--line); border-radius:99px; color:var(--muted); white-space:nowrap; }
+  .halka.son { border-left-color: var(--muted); }
+  .kuye { display:flex; flex-wrap:wrap; gap:4px; margin:3px 0 2px 0; }
+  .kchip { display:inline-flex; align-items:center; gap:4px; font-size:11px; padding:1px 7px;
+           border:1px solid var(--line); border-radius:99px; color:var(--muted); }
+  .kchip i { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .krow { display:flex; gap:8px; align-items:baseline; padding:3px 0; font-size:13px; flex-wrap:wrap; }
+  .krow small { color:var(--muted); }
+  .ktip { font-size:11px; padding:1px 6px; border:1px solid var(--line); border-radius:99px; color:var(--muted); }
+  .vkbar i.cekimser { background:var(--cekimser); } .vkbar i.katilmadi { background:var(--faint); }
+  .vkfarkli { font-size:.66rem; font-weight:700; color:var(--ret); background:var(--ret-wash); padding:2px 7px; border-radius:999px; white-space:nowrap; }
+  .vkchev { color:var(--muted); font-size:.8rem; transition:transform .2s; }
+  .vk[aria-expanded="true"] .vkchev { transform:rotate(90deg); }
+  .vkbody { display:none; padding:2px 4px 14px; }
+  .vk[aria-expanded="true"] .vkbody { display:block; }
+  .vksum { font-size:.82rem; color:var(--ink-2); margin-bottom:10px; }
+  .vksum b { color:var(--petrol-ink); font-variant-numeric:tabular-nums; }
+  .oylist { display:flex; flex-direction:column; }
+  .orow { display:grid; grid-template-columns:auto auto 1fr auto; align-items:center; gap:10px; padding:5px 0; border-top:1px solid var(--line-2); font-size:.8rem; }
+  .orow:first-child { border-top:0; }
+  .otag { font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:5px; white-space:nowrap; letter-spacing:.02em; }
+  .otag.kabul { background:var(--petrol-wash); color:var(--petrol-ink); }
+  .otag.ret { background:var(--ret-wash); color:var(--ret); }
+  .otag.cekimser { background:var(--line-2); color:var(--ink-2); }
+  .otag.katilmadi { background:transparent; color:var(--muted); border:1px solid var(--line); }
+
+  .otxt { color:var(--ink-2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.35; }
+  .okay { font-size:.62rem; font-weight:700; margin-left:8px; color:var(--muted); text-decoration:none; white-space:nowrap; }
+  .okay:hover { color:var(--ink-2); text-decoration:underline; }
+  .oyok { color:var(--muted); font-style:italic; }
+  .okno { font-size:.62rem; font-weight:700; color:var(--muted); margin-left:6px; white-space:nowrap; }
+  .otar { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .ofarkli { font-size:.62rem; font-weight:700; color:var(--ret); white-space:nowrap; }
+
+  .soz { margin-top:14px; border-top:1px solid var(--line-2); padding-top:10px; }
+  .sozbaslik { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; }
+  .sozrow { display:grid; grid-template-columns:auto 1fr; gap:10px; padding:6px 0; border-top:1px solid var(--line-2); text-decoration:none; color:inherit; align-items:start; }
+  .sozrow:first-of-type { border-top:0; }
+  .sozrow:hover .sozmetin { color:var(--petrol); }
+  .soztar { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .sozmetin { font-size:.8rem; color:var(--ink-2); line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .soznot { font-size:.7rem; color:var(--muted); margin-top:8px; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:6px; font-size:.76rem; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; color:var(--ink-2); font-weight:600; }
+  .legend i { width:12px; height:12px; border-radius:3px; }
+  footer { text-align:center; color:var(--muted); font-size:.76rem; padding:34px 0 0; margin-top:28px; border-top:1px solid var(--line); }
+  footer a { color:var(--petrol-ink); }
+  @media (max-width:560px) {
+    h1 { font-size:1.55rem; }
+    .vkbar { width:96px; }
+    .vkhead { grid-template-columns:1fr auto; }
+  }
+</style>
+<style>
+
+  .zincir { display:flex; flex-direction:column; gap:0; margin-top:6px; }
+  .halka { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:14px 16px; box-shadow:var(--shadow); }
+
+  .halka + .ok { align-self:center; width:2px; height:22px; background:var(--line); font-size:0; position:relative; padding:0; margin:2px 0; }
+  .halka + .ok::after { content:''; position:absolute; top:50%; left:50%; width:8px; height:8px; border-radius:50%;
+    background:var(--petrol); transform:translate(-50%,-50%); box-shadow:0 0 0 4px var(--paper); }
+  .halka .hb { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--petrol); margin-bottom:5px; }
+  .halka .hv { font-size:.95rem; color:var(--ink); }
+  .halka .hv b { font-variant-numeric:tabular-nums; }
+  .halka .hn { font-size:.78rem; color:var(--muted); margin-top:6px; line-height:1.5; }
+  .halka a.kay { font-size:.72rem; font-weight:700; color:var(--petrol-ink); text-decoration:none; margin-left:8px; white-space:nowrap; }
+  .halka a.kay:hover { text-decoration:underline; }
+  .prow { display:grid; grid-template-columns:110px 1fr auto; align-items:center; gap:10px; padding:5px 0; border-top:1px solid var(--line-2); font-size:.84rem; }
+  .prow:first-of-type { border-top:0; }
+  .prow .pp { font-weight:600; color:var(--ink-2); display:flex; align-items:center; gap:7px; }
+  .prow .pp .d { width:9px; height:9px; border-radius:50%; flex:none; }
+  .pbar { display:flex; height:14px; border-radius:4px; overflow:hidden; background:var(--line-2); }
+  .pbar i { height:100%; display:block; }
+  .pbar i.kabul { background:var(--petrol); } .pbar i.ret { background:var(--ret); }
+  .pbar i.cekimser { background:var(--cekimser); } .pbar i.katilmadi { background:var(--faint); }
+  .pnum { font-variant-numeric:tabular-nums; font-size:.78rem; font-weight:700; color:var(--ink-2); white-space:nowrap; }
+  .pnum small { font-weight:500; color:var(--muted); }
+  .ara { display:flex; flex-wrap:wrap; gap:9px; align-items:flex-end; margin:16px 0 4px; }
+  #empty { color:var(--muted); padding:18px 2px; font-size:.9rem; line-height:1.55; }
+
+  .yrow { display:grid; grid-template-columns:auto 1fr auto; align-items:start; gap:12px; padding:9px 0; border-top:1px solid var(--line-2); text-decoration:none; color:inherit; }
+  .yrow:first-child { border-top:0; }
+  .yrow:hover .ybas { color:var(--petrol); }
+  .ytur { font-size:.58rem; font-weight:700; letter-spacing:.03em; padding:3px 7px; border-radius:5px; background:var(--petrol-wash); color:var(--petrol-ink); white-space:nowrap; margin-top:1px; }
+  .ybas { font-size:.85rem; color:var(--ink); line-height:1.35; }
+  .ytar { font-size:.74rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; margin-top:1px; }
+  .ynote { font-size:.72rem; color:var(--muted); margin-top:12px; line-height:1.5; border-top:1px solid var(--line-2); padding-top:10px; }
+  @media (max-width:560px) { .yrow { grid-template-columns:auto 1fr; } .ytar { grid-column:2; margin-top:0; } }
+  @media (max-width:560px) { .prow { grid-template-columns:88px 1fr; } .prow .pnum { grid-column:1/-1; text-align:right; } }
+</style>
+</head>
+<body>
+<nav>
+  <span class="wordmark" aria-hidden="true"></span>
+  <div class="nav-r"><button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button></div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="/">← Ana sayfa</a>
+  <h1>Bir kanunun hikâyesi</h1>
+  <p class="lede">Bir kanun teklifi <b>kim tarafından verildi</b>, <b>kaç imza</b> topladı, Genel Kurul'da <b>kim nasıl oy verdi</b> — zincirin tamamı tek sayfada. Her halka <b>TBMM kaydına</b> bağlıdır.</p>
+
+  <div class="ara">
+    <div class="fld">
+      <label for="kanunSec">Kanun</label>
+      <select id="kanunSec"><option value="">Yükleniyor…</option></select>
+    </div>
+  </div>
+
+  <div id="govde"><div id="empty">Bir kanun seç.</div></div>
+
+  <div class="ara" style="margin-top:26px">
+    <div class="fld" style="flex:1 1 260px">
+      <label for="kanunAraGirdi">Farklı bir kanun teklifi ara (kelime)</label>
+      <input type="search" id="kanunAraGirdi" autocomplete="off" placeholder="ör. deprem, asgari ücret, orman…" />
+    </div>
+  </div>
+  <div id="kanunAraSonuc"></div>
+</div>
+
+<script type="module">
+import { partiRenk, nf, usulNot, sayfaCanlandir, temaDegistir } from './ortak.js';
+sayfaCanlandir();
+const $ = (id) => document.getElementById(id);
+
+$('themeTgl').addEventListener('click', temaDegistir);
+
+const params = new URLSearchParams(location.search);
+let SS = params.get('ss') || '';
+const ARA_URL = params.get('ara') || '';
+
+const OY_YOK = {
+  'ss-yok': 'Bu teklife <b>sıra sayısı verilmemiş</b> — esas komisyon raporunu yazmadan teklif Genel Kurul gündemine inmez. Yani teklif bu aşamaya hiç gelmemiş.',
+  'toplu': 'Bu teklif oylanmış ama <b>vekil bazlı döküm yok</b>: Meclis\'te oyların çoğu <b>işaretle</b> (el kaldırarak) alınır ve kimin nasıl oy verdiği tutanağa geçmez.',
+  'kayit-yok': 'Bu sıra sayısı için <b>kayda geçen açık oylama bulunamadı</b>. Teklif işaretle oylanmış ya da oylama tutanağı çözümlenememiş olabilir.',
+};
+
+const trTarih = (t) => { const [y, a, g] = String(t).split('-'); return `${g}.${a}.${y}`; };
+
+function imzaciListesi(im) {
+  const k = im.kisiler ?? [];
+  if (!k.length) return '';
+  const kirpik = im.toplam > k.length;
+  const GORUNEN = 40;
+  const kisi = (p) => `<span style="white-space:nowrap">${p.ilk_imza ? '★ ' : ''}${p.ad_soyad}${p.parti ? ` <small style="color:var(--muted)">${p.parti}</small>` : ''}</span>`;
+  const ilkBlok = k.slice(0, GORUNEN).map(kisi).join(' · ');
+  const kalanBlok = k.length > GORUNEN ? k.slice(GORUNEN).map(kisi).join(' · ') : '';
+  return `<details class="hn" style="margin-top:6px">
+    <summary style="cursor:pointer;font-weight:600;color:var(--ink-2)">Bu teklifi kimler imzaladı</summary>
+    <div style="margin-top:7px;line-height:1.9">${ilkBlok}${kalanBlok ? `<span id="imzaKalan" hidden> · ${kalanBlok}</span>` : ''}</div>
+    ${kalanBlok ? `<button type="button" id="imzaTumuBtn" style="margin-top:6px;font-size:.78rem;font-weight:700;color:var(--petrol-ink);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline">Tümünü göster (${nf(k.length)} imzacı)</button>` : ''}
+    <div style="margin-top:8px;color:var(--muted)">★ = ilk imza sahibi (teklifin sahibi); diğerleri destekleyen imzalardır.
+      ${kirpik ? `Listede <b>${nf(k.length)}</b> imzacı gösteriliyor, toplam <b>${nf(im.toplam)}</b> — liste uzunluğu nedeniyle kırpıldı, seçim yapılmadı (ad sırası).` : ''}</div>
+  </details>`;
+}
+const uzunTarih = (t) => new Date(t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+function duyuruEki(j) {
+  const d = j.duyurular ?? [];
+  if (!d.length) return '';
+  const trTur = (t) => (t ? t.toLocaleLowerCase('tr').replace(/lar$|ler$/, '') : 'düzenleme');
+  const satir = (x) => {
+    const y = x.tarih ? new Date(x.tarih).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+    const bas = x.url
+      ? `<a href="${x.url}" target="_blank" rel="noopener">${x.baslik}</a>`
+      : x.baslik;
+    return `<div class="drow"><span class="dtur">${trTur(x.tur)}</span> ${bas}${y ? ` <small>· ${y}</small>` : ''}</div>`;
+  };
+  return `<div class="ok">↓</div><div class="halka son"><div class="hb">Sonrası · Resmî Gazete izi</div>
+    <div class="hv">Bu kanunu uygulayan/atıf yapan <b>${nf(d.length)}</b> resmî düzenleme.</div>
+    ${d.map(satir).join('')}
+    <div class="hn">${j.duyuru_not ?? ''} Başlıklar Resmî Gazete'den <b>aynen</b> alınmıştır; hangisinin
+      önemli olduğuna dair bir seçim veya sıralama yapılmaz (tarih sırası). Bu liste, o kanuna RG
+      başlığında <b>açıkça atıf yapan</b> öğelerle sınırlıdır; kanunun tüm ikincil mevzuatı olduğu
+      iddia edilmez.</div></div>`;
+}
+
+function aymHalkasi(j) {
+  if (!j.aym_uygulanabilir) {
+    if (!j.aym_yok_sebep) return '';
+    return `<div class="ok">↓</div><div class="halka"><div class="hb">5 · Anayasa Mahkemesi</div>
+      <div class="hv" style="color:var(--muted)">Bu dönem için gösterilemiyor.</div>
+      <div class="hn">${j.aym_yok_sebep}</div></div>`;
+  }
+  const a = j.aym;
+  const kap = a.kapsam;
+  const pencere = kap?.lo
+    ? `Verimiz <b>${uzunTarih(kap.lo)} – ${uzunTarih(kap.hi)}</b> arasında karara bağlanmış `
+      + `<b>${nf(kap.n)}</b> Anayasa Mahkemesi kararını kapsar.`
+    : '';
+  const koken = `<br>Bu bağ, Anayasa Mahkemesi karar özetinde <b>kanun numarasının geçmesinden</b> `
+    + `çıkarıldı; TBMM ya da AYM tarafından kurulmuş resmî bir bağ değildir.`;
+
+  if (!a.kararlar.length) {
+    return `<div class="ok">↓</div><div class="halka"><div class="hb">5 · Anayasa Mahkemesi</div>
+      <div class="hv" style="color:var(--muted)">Korpusumuzda bu kanuna ilişkin kayıt yok.</div>
+      <div class="hn">Bu, kanunun Anayasa Mahkemesi'ne <b>taşınmadığı anlamına gelmez</b>. ${pencere}${koken}</div></div>`;
+  }
+
+  const ozet = a.ana_n > 0
+    ? `Bu kanun, Anayasa Mahkemesi'nin <b>${nf(a.esas_n)}</b> esas incelemesinde dava konusu edildi`
+      + (a.usul_n ? `; ayrıca <b>${nf(a.usul_n)}</b> başvuru usulden reddedildi` : '') + '.'
+    : `Bu kanunun <b>değiştirdiği hükümler</b>, Anayasa Mahkemesi'nin <b>${nf(a.kararlar.length)}</b> kararında anıldı. `
+      + `Kararların dava konusu <b>başka bir kanundur</b>.`;
+
+  const satir = a.kararlar.map((k) => {
+    const rg = k.rg_tarihi
+      ? ` · Resmî Gazete: ${k.rg_url ? `<a class="kay" href="${k.rg_url}" target="_blank" rel="noopener">${trTarih(k.rg_tarihi)}${k.rg_sayisi ? ' · sayı ' + k.rg_sayisi : ''} ↗</a>` : `<b>${trTarih(k.rg_tarihi)}</b>${k.rg_sayisi ? ' (sayı ' + k.rg_sayisi + ')' : ''}`}`
+      : '';
+    const rolNot = k.rol === 'metin-ici' && k.sonuc_kod === 'iptal'
+      ? `<br><small>Bu kararda iptal edilen hükmün bu kanuna ait olduğu karar özetinden anlaşılamıyor; kararda birden çok kanun anılıyor.</small>`
+      : k.sonuc_kod === 'ilk_ret'
+        ? `<br><small>Mahkeme esasa girmedi; kanun hakkında anayasaya uygunluk değerlendirmesi yapılmadı.</small>`
+        : k.sonuc_kod === 'iptal'
+          ? `<br><small>Karar, kanunun <b>bir hükmünü</b> iptal etti — kanunun tamamı değildir.</small>`
+          : '';
+    return `<div class="hn" style="border-top:1px solid var(--line-2);padding-top:6px;margin-top:6px">
+      <b>${trTarih(k.tarih)}</b> · <span title="Esas No — davanın Anayasa Mahkemesi'ne kayıt numarası">E:${k.esas_no}</span> <span title="Karar No — mahkemenin bu davada verdiği kararın numarası">K:${k.karar_no}</span> — <b>${k.sonuc}</b>${rg}
+      ${k.basvuru ? '<br>' + k.basvuru : ''}${rolNot}
+      <a class="kay" href="${k.url}" target="_blank" rel="noopener">AYM karar metni ↗</a></div>`;
+  }).join('');
+
+  return `<div class="ok">↓</div><div class="halka"><div class="hb">5 · Anayasa Mahkemesi</div>
+    <div class="hv">${ozet}</div>${satir}
+    <div class="hn">${pencere}${koken}</div></div>`;
+}
+
+function sureNot(k, oy) {
+  if (k.surec_gun == null) return '';
+  const ay = k.surec_gun >= 60 ? ` (yaklaşık ${Math.round(k.surec_gun / 30)} ay)` : '';
+  return `<div class="hn">Teklifin verilişinden bu oylamaya kadar <b>${nf(k.surec_gun)}</b> gün geçti${ay}. `
+    + `Bu süre <b>kanunlaşma süresi değildir</b>: Resmî Gazete'de yayım daha sonradır ve o kayıtla `
+    + `eşleştirme yapılmamıştır. Karşılaştırma için: 28. dönemde kanunlaşan tekliflerde bu sürenin `
+    + `<b><span title="Ortanca (medyan): süreler küçükten büyüğe sıralandığında tam ortada kalan değer — birkaç aşırı hızlı ya da yavaş teklif ortalamayı çarpıtabildiği için ortanca tercih edilir">ortancası</span> 198 gün</b>.</div>`;
+}
+
+function celiskiNot(oy) {
+  const c = oy.celiski;
+  if (!c) return '';
+  const d = (n) => (n > 0 ? `+${nf(n)}` : nf(n));
+  const kalem = [
+    c.fark.kabul ? `kabul ${d(c.fark.kabul)}` : '',
+    c.fark.ret ? `ret ${d(c.fark.ret)}` : '',
+    c.fark.cekimser ? `çekimser ${d(c.fark.cekimser)}` : '',
+  ].filter(Boolean).join(' · ');
+  return `<div class="hn" style="border-left:3px solid var(--petrol);padding-left:.6em">
+    <b>İki resmî kayıt bu oylamada uyuşmuyor.</b>
+    Tutanak metninin özet satırı <b>${nf(c.tutanak.kabul)}</b> kabul / <b>${nf(c.tutanak.ret)}</b> ret;
+    basılmış cetvelin satırları toplandığında <b>${nf(c.cetvel.kabul)}</b> kabul / <b>${nf(c.cetvel.ret)}</b> ret çıkıyor
+    (fark: ${kalem}). Hangisinin doğru olduğunu <b>söyleyemiyoruz</b> — ikisi de TBMM'nin kendi kaydı.
+    Yukarıdaki parti dökümü <b>cetvelden</b> gelir.</div>`;
+}
+
+function partiSatir(p, enB) {
+  const kul = p.kabul + p.ret + p.cekimser;
+  const g = (n) => (enB ? (100 * n / enB) : 0).toFixed(1);
+  return `<div class="prow">
+    <div class="pp"><span class="d party-dot" style="background:${partiRenk(p.parti)}"></span>${p.parti}</div>
+    <div class="pbar" title="kabul ${p.kabul} · ret ${p.ret} · çekimser ${p.cekimser} · katılmadı ${p.katilmadi}">
+      <i class="kabul" style="width:${g(p.kabul)}%"></i><i class="ret" style="width:${g(p.ret)}%"></i>
+      <i class="cekimser" style="width:${g(p.cekimser)}%"></i><i class="katilmadi" style="width:${g(p.katilmadi)}%"></i>
+    </div>
+    <div class="pnum">${nf(p.kabul)} kabul · ${nf(p.ret)} ret <small>· ${nf(p.katilmadi)} katılmadı</small></div>
+  </div>`;
+}
+
+function uyeSatiri(x) {
+  const u = x.uyeler ?? [];
+  if (!u.length) return '';
+  const top = x.uye_toplam || u.reduce((s, p) => s + p.n, 0);
+  if (!top) return '';
+  return `<div class="kuye" title="komisyondaki sandalye dağılımı">` +
+    u.map((p) => `<span class="kchip"><i style="background:${partiRenk(p.parti)}"></i>${p.parti} <b>${p.n}</b></span>`).join('') +
+    `</div>`;
+}
+
+function komisyonHalkasi(kom, k, uyeNot) {
+  if (!kom || !kom.length) return '';
+  const iso = (t) => {
+    if (!t) return null;
+    const m = String(t).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    return m ? `${m[3]}-${m[2]}-${m[1]}` : (/^\d{4}-\d{2}-\d{2}/.test(t) ? String(t).slice(0, 10) : null);
+  };
+  const tarih = (t) => {
+    const i = iso(t);
+    if (!i) return String(t ?? '—');
+    const [y, ay, g] = i.split('-');
+    return `${g}.${ay}.${y}`;
+  };
+  const gun = (a, b) => {
+    const ia = iso(a), ib = iso(b);
+    if (!ia || !ib) return null;
+    const d = Math.round((new Date(ib + 'T00:00:00Z') - new Date(ia + 'T00:00:00Z')) / 86400000);
+    return d >= 0 ? d : null;
+  };
+  const esas = kom.find((x) => /esas/i.test(x.tip)) ?? kom[0];
+  const sat = kom.map((x) => {
+    const d = gun(x.giris, x.cikis);
+    const sure = d !== null ? ` · <b>${nf(d)}</b> gün` : (x.giris && !x.cikis ? ' · <b>çıkış kaydı yok</b>' : '');
+    return `<div class="krow"><span class="ktip">${x.tip}</span> <b>${x.ad}</b>
+      <small>${x.giris ? tarih(x.giris) : '—'}${x.cikis ? ' → ' + tarih(x.cikis) : ''}${sure}${x.islem ? ' · ' + x.islem.toLocaleLowerCase('tr') : ''}</small>
+      ${uyeSatiri(x)}</div>`;
+  }).join('');
+  const bek = gun(esas.giris, esas.cikis);
+  const bas = esas.cikis
+    ? `Esas komisyon <b>${esas.ad}</b>${bek !== null ? `; teklif burada <b>${nf(bek)}</b> gün kaldı` : ''}.`
+    : `Esas komisyon <b>${esas.ad}</b>; <b>çıkış tarihi kayıtlı değil</b>.`;
+  return `<div class="ok">↓</div><div class="halka"><div class="hb">2b · Komisyon</div>
+    <div class="hv">${bas}</div>${sat}
+    <div class="hn">${uyeNot ? uyeNot + ' ' : ''}Komisyon bilgisi TBMM'nin teklif kaydından gelir.
+      <b>Çıkış tarihi boş olması, teklifin hâlâ komisyonda olduğunu KANITLAMAZ</b>: kayıt eksik de
+      olabilir. Süre, giriş ve çıkış tarihleri arasındaki takvim günüdür; komisyonun kaç kez
+      toplandığını göstermez.
+      ${k && k.url ? `<a class="kay" href="${k.url}" target="_blank" rel="noopener">TBMM teklif kaydı ↗</a>` : ''}</div></div>`;
+}
+
+async function ciz() {
+  if (!SS) { $('govde').innerHTML = '<div id="empty">Bir kanun seç.</div>'; return; }
+  let j;
+  try { j = await (await fetch('/api/ozet/kanun-hikaye?ss=' + encodeURIComponent(SS))).json(); }
+  catch { $('govde').innerHTML = '<div id="empty">Veriye ulaşılamadı. Birazdan tekrar deneyin.</div>'; return; }
+  if (!j?.bulundu) { $('govde').innerHTML = '<div id="empty">Bu sıra sayısı için teklif kaydı bulunamadı.</div>'; return; }
+
+  const k = j.kanun, im = j.imza, oy = j.oy;
+  const imzaSat = (im.partiler ?? []).map((p) => `${p.parti} <b>${nf(p.n)}</b>`).join(' · ');
+  const enB = Math.max(1, ...(oy.partiler ?? []).map((p) => p.toplam));
+
+  let html = '<div class="zincir">';
+  const gt = k.gelis_tarihi ?? k.tarih;
+  html += `<div class="halka"><div class="hb">1 · Teklif verildi</div>
+    <div class="hv">${k.baslik}</div>
+    <div class="hn">${gt ? 'Başkanlığa geliş: <b>' + trTarih(gt) + '</b> · ' : ''}${k.donem}. dönem${k.sira_sayisi ? ` · <span title="Bir teklif komisyondan geçip Genel Kurul gündemine alındığında verilen takip numarası">S. Sayısı</span> <b>${k.sira_sayisi}</b>` : ''}${k.esas_no ? ` · <span title="Teklifin TBMM'ye kayıt sırasında aldığı resmî evrak numarası">Esas</span> <b>${k.esas_no}</b>` : ''}
+      <br>${usulNot('sirasayisi')}
+      <a class="kay" href="${k.url}" target="_blank" rel="noopener">TBMM kaydı ↗</a></div></div>`;
+  html += '<div class="ok">↓</div>';
+  html += `<div class="halka"><div class="hb">2 · İmzalar</div>
+    <div class="hv"><b>${nf(im.toplam)}</b> milletvekili imzaladı${im.ilk ? `; ilk imza <b>${im.ilk.ad_soyad}</b> (${im.ilk.parti})` : ''}.</div>
+    ${imzaciListesi(im)}
+    <div class="hn">${imzaSat || 'İmza kaydı yok.'}<br>
+      İmza partisi, TBMM'nin belgeye iliştirdiği <b>imza anındaki</b> parti bilgisidir — vekilin bugünkü partisi farklı olabilir.
+      ${im.kaynak_dogrulanmis === im.toplam && im.toplam > 0
+        ? `Bu belgedeki <b>${nf(im.toplam)}</b> imzanın tamamında parti bilgisi <b>TBMM kaydından</b> geliyor; roster tahmini kullanılmadı.`
+        : ''}</div></div>`;
+  html += komisyonHalkasi(j.komisyon, k, j.komisyon_uye_not);
+
+  html += '<div class="ok">↓</div>';
+  if (oy.durum === 'var') {
+    const o = oy.ozet;
+    html += `<div class="halka"><div class="hb">3 · Genel Kurul oyladı</div>
+      <div class="hv">${o ? `<b>${nf(o.kullanilan)}</b> oy kullanıldı — <b>${nf(o.kabul)}</b> kabul, <b>${nf(o.ret)}</b> ret${o.cekimser ? ', <b>' + nf(o.cekimser) + '</b> çekimser' : ''}.` : 'Vekil bazlı döküm:'}</div>
+      ${(oy.partiler ?? []).map((p) => partiSatir(p, enB)).join('')}
+      ${sureNot(k, oy)}${celiskiNot(oy)}
+      <div class="hn">Çubuk boyu, en çok vekili olan partiye göre ölçeklidir; mutlak sayılar sağda.
+        ${j.katilmadi_notu ? `<b>"Katılmadı" devamsızlık DEĞİLDİR:</b> ${j.katilmadi_notu.replace(/^“Katılmadı”, /, '')} ` : ''}
+        <b>Döküm</b> (parti çubukları) TBMM'nin <span title="Cetvel: TBMM'nin oylama sonrası bastığı, hangi vekilin nasıl oy kullandığını tek tek listeleyen resmî belge">Basılmış tutanağındaki cetvelinden</span> çıkarıldı ve cetvelin kendi özet kutusuyla doğrulandı.
+        ${oy.ozet_kaynagi === 'tutanak' ? ' <b>Üstteki toplam</b> ise ayrı bir belgeden — tutanak metninin özet satırından — gelir.' : ''}
+        ${oy.ozet_kaynagi === 'cetvel-toplami' ? ' Üstteki toplam, tutanağın özet kutusundan değil <b>cetvel satırları toplanarak</b> hesaplandı (bu oylamanın özet kutusu eşleştirilemedi).' : ''}
+        ${oy.url ? `<a class="kay" href="${oy.url}" target="_blank" rel="noopener">Tutanak ↗</a>` : ''}
+        ${oy.kanit_pdf ? `<a class="kay" href="${oy.kanit_pdf}" target="_blank" rel="noopener">Oy cetveli (PDF) ↗</a>` : ''}</div></div>`;
+  } else {
+    html += `<div class="halka"><div class="hb">3 · Genel Kurul</div>
+      <div class="hv" style="color:var(--muted)">Vekil bazlı oy dökümü yok.</div>
+      <div class="hn">${OY_YOK[oy.durum] ?? ''}<br>${usulNot('acikOylama')}</div></div>`;
+  }
+  html += '<div class="ok">↓</div>';
+  const kanunlasti = k.durum === 'KANUNLAŞTI';
+  html += `<div class="halka"><div class="hb">4 · Sonuç</div>
+    <div class="hv">${kanunlasti ? `<b>Kanunlaştı</b>${k.kanun_no ? ' — Kanun No <b>' + k.kanun_no + '</b>' : ''}.` : `Durum: <b>${k.durum || 'belirtilmemiş'}</b>.`}</div>
+    <div class="hn">Kanunlaşmayı komisyon ve Genel Kurul <b>çoğunluğu</b> belirler; bu bir başarı ölçüsü değildir.</div></div>`;
+  html += aymHalkasi(j);
+  html += duyuruEki(j);
+  html += '</div>';
+  $('govde').innerHTML = html;
+  document.title = `Mizan · ${String(k.baslik).slice(0, 60)}`;
+  $('imzaTumuBtn')?.addEventListener('click', () => {
+    $('imzaKalan').hidden = false;
+    $('imzaTumuBtn').remove();
+  });
+}
+
+async function boot() {
+  let j;
+  try { j = await (await fetch('/api/ozet/kanunlar?donem=28&limit=200')).json(); } catch { j = null; }
+  const kayitlar = j?.kayitlar ?? [];
+  if (!SS && kayitlar.length) {
+    const ilk = kayitlar.find((r) => r.sira_sayisi);
+    if (ilk) { SS = String(ilk.sira_sayisi); history.replaceState(null, '', `?ss=${encodeURIComponent(SS)}`); }
+  }
+  const sel = $('kanunSec');
+  if (!kayitlar.length) { sel.innerHTML = '<option value="">Liste yüklenemedi</option>'; }
+  else {
+    sel.innerHTML = '<option value="">Kanun seç…</option>' + kayitlar
+      .filter((r) => r.sira_sayisi)
+      .map((r) => {
+        const b = String(r.baslik);
+        return `<option value="${r.sira_sayisi}" title="${b.replace(/"/g, '&quot;')}">${b.length > 78 ? b.slice(0, 78) + '…' : b}</option>`;
+      }).join('');
+    if (SS) sel.value = SS;
+  }
+  sel.addEventListener('change', () => {
+    SS = sel.value;
+    history.replaceState(null, '', SS ? `?ss=${encodeURIComponent(SS)}` : location.pathname);
+    ciz();
+  });
+  ciz();
+}
+
+let kanunAraTimer = null, kanunAraSonKey = '';
+function kanunAraKur() {
+  $('kanunAraGirdi').addEventListener('input', () => {
+    clearTimeout(kanunAraTimer);
+    kanunAraTimer = setTimeout(kanunAraCalistir, 350);
+  });
+  if (ARA_URL) {
+    $('kanunAraGirdi').value = ARA_URL;
+    kanunAraCalistir().then(() => {
+      $('kanunAraGirdi').scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+async function kanunAraCalistir() {
+  const terim = $('kanunAraGirdi').value.trim();
+  const el = $('kanunAraSonuc');
+  if (terim.length < 3) { el.innerHTML = ''; return; }
+  kanunAraSonKey = terim;
+  let j;
+  try { j = await (await fetch('/api/ozet/kanun-ara?' + new URLSearchParams({ q: terim, limit: '10' }))).json(); }
+  catch (e) { return; }
+  if (terim !== kanunAraSonKey) return;
+  if (!j || !j.success) { el.innerHTML = `<div id="empty">Arama yapılamadı.</div>`; return; }
+  if (!j.kayitlar.length) { el.innerHTML = `<div id="empty">“${terim}” kelimesi geçen bir kanun teklifi bulunamadı (${j.donem}. dönem).</div>`; return; }
+  el.innerHTML = `<div class="ynote" style="margin-bottom:6px">${j.toplam} teklifin ${j.gosterilen} tanesi gösteriliyor (${j.donem}. dönem) — hikâyesi olanlar Mizan'a, diğerleri TBMM kaydına gider.</div>` +
+    j.kayitlar.map((r) => {
+      const hikaye = r.sira_sayisi ? `/kanun.html?ss=${encodeURIComponent(r.sira_sayisi)}` : null;
+      const href = hikaye || r.url || '#';
+      return `<a class="yrow" href="${href}"${hikaye ? '' : ' target="_blank" rel="noopener"'}>
+        <span class="ytur">${(r.durum || '').trim() || '—'}</span>
+        <span class="ybas">${(r.baslik || '').trim()}${r.parti ? ` <small style="color:var(--muted)">· ${r.parti}</small>` : ''}${hikaye ? ` <small style="color:var(--petrol-ink)">· Mizan'da hikâyesi var →</small>` : ''}</span>
+        <span class="ytar">${trTarih(r.tarih)}</span>
+      </a>`;
+    }).join('');
+}
+kanunAraKur();
+
+boot();
+</script>
+</body>
+</html>

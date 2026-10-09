@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mizan · Analiz aracı (uzman)</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+
+  * { box-sizing:border-box; }
+  a, button, input, select { transition:color .15s ease, background-color .15s ease, border-color .15s ease, transform .12s ease, box-shadow .2s ease; }
+  button:active { transform:scale(.97); }
+  body { font-family:var(--sans); margin:0; padding:0 0 24px; background:var(--paper); color:var(--ink); font-size:13px; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:1200px; margin:0 auto; padding:0 18px; }
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 18px;
+    background:color-mix(in srgb, var(--paper) 86%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); margin-bottom:14px; }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.1rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); }
+  .theme-tgl { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.9rem; cursor:pointer; }
+  h1 { font-family:var(--serif); font-size:1.3rem; margin:0 0 2px; background:linear-gradient(135deg,var(--ink),var(--petrol)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .sub { color:var(--ink-2); font-size:.72rem; margin:0 0 10px; line-height:1.45; }
+  .bar { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-bottom:9px; }
+  .fld label { display:block; font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:4px; }
+  select { padding:5px 8px; border:1px solid var(--line); border-radius:6px; font:inherit; font-size:.8rem; font-weight:600; background:var(--card); color:var(--ink); min-width:140px; }
+  .seg { display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .seg button { border:none; background:var(--card); padding:5px 9px; font:inherit; font-size:.72rem; font-weight:600; color:var(--ink-2); cursor:pointer; }
+  .seg button.on { background:var(--petrol); color:var(--card); }
+  .grow { flex:1; text-align:right; font-size:.78rem; color:var(--muted); }
+  .grow a { color:var(--petrol-ink); }
+  .legend { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; padding:3px 8px; border:1px solid var(--line); border-radius:14px; font-size:.7rem; font-weight:600; color:var(--ink-2); cursor:pointer; background:var(--card); -webkit-user-select:none; user-select:none; }
+  .chip .dot { width:9px; height:9px; border-radius:50%; flex:none; }
+  .chip.on { color:#eae0cf; border-color:transparent; }
+  .card { background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:11px; padding:10px 13px 4px; position:relative; }
+  .card .ttl { font-size:.88rem; font-weight:700; margin-bottom:5px; }
+  .card .ttl span { font-weight:600; color:var(--muted); font-size:.8rem; }
+  svg { display:block; width:100%; height:auto; }
+  .tip { position:fixed; pointer-events:none; background:var(--card); border:1px solid var(--line); color:var(--ink); font-size:.75rem; padding:8px 10px; border-radius:8px; z-index:20; display:none; max-width:280px; box-shadow:var(--shadow); }
+  .tip .row { display:flex; justify-content:space-between; gap:14px; margin-top:2px; }
+  #status { font-size:.85rem; color:var(--muted); margin-top:8px; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="wordmark" aria-hidden="true"></span>
+  <button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button>
+</nav>
+<div class="wrap">
+  <h1>Parti × Hafta × Konu</h1>
+
+  <div style="font-size:.74rem;line-height:1.55;color:var(--muted);border-left:3px solid var(--petrol);
+              padding:8px 0 8px 11px;margin:10px 0 14px;background:transparent">
+    <b style="color:var(--ink-2)">Bu bir uzman aracıdır.</b> Site genelinde her sayının yanında duran
+    kapsam ve çekince notları burada <b>yoktur</b>; veri aynı kaynaklardan gelir ama <b>çerçevesiz</b>
+    sunulur. Buradan alınan bir kesit paylaşılacaksa, aynı ölçünün
+    <a href="/parti.html" style="color:var(--petrol-ink);font-weight:600">parti sayfasındaki</a>
+    notlarıyla birlikte okunmalıdır. Özellikle: konu etiketleri <b>tahmindir</b>, önerge verisi
+    <b>muhalefet-denetim ağırlıklıdır</b> ve dönemler <b>farklı uzunluktadır</b> — bu yüzden burada
+    yalnız <b>pay (%)</b> karşılaştırılır, ham adet değil.
+  </div>
+
+  <p class="sub"><span id="ftDonem">Dönem —</span> · veri = <b>soru önergesi + kanun teklifi</b> (önerge muhalefet-denetim ağırlıklı, iktidar az verir). X = <b>haftalar</b> (<span id="ftAralik">—</span>). <b>Görünüm</b>: <b>Konular</b> = bir parti, tüm konular · <b>Partiler</b> = bir konu, partiler yan yana. <b>Yüzde</b> = o partinin o <b>haftaki</b> gündeminin % kaçı — hacimden bağımsız adil kıyas.</p>
+
+  <div class="bar">
+    <div class="fld"><label>Yasama dönemi</label><select id="donemSel"></select></div>
+    <div class="fld"><label>Görünüm</label>
+      <div class="seg" id="gorunum"><button data-v="konu" class="on">Konular (tek parti)</button><button data-v="parti">Partiler (tek konu)</button></div>
+    </div>
+    <div class="fld" id="partiFld"><label>Parti</label><select id="parti"></select></div>
+    <div class="fld" id="konuFld" style="display:none"><label>Konu</label><select id="konu"></select></div>
+    <div class="fld"><label>Kaynak</label>
+      <div class="seg" id="kaynak"><button data-v="" class="on">Hepsi</button><button data-v="kanun">Kanun</button><button data-v="onerge">Önerge</button></div>
+    </div>
+    <div class="fld"><label>Ölçek</label>
+      <div class="seg" id="olcek"><button data-v="pct" class="on">Yüzde %</button><button data-v="adet">Adet</button></div>
+    </div>
+    <div class="grow"><span id="selinfo"></span> · <a href="#" id="clear">temizle</a></div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+  <div class="card"><div class="ttl" id="chartTtl"></div><div id="chart"></div></div>
+  <div id="status">Yükleniyor…</div>
+
+  <div class="card" style="margin-top:22px">
+    <div class="bar" style="margin-bottom:8px">
+      <div class="fld"><label>Ortak imza · teklif sahibi</label><select id="imzaParti"></select></div>
+      <div class="fld"><label>Ölçek</label>
+        <div class="seg" id="imzaOlcek"><button data-v="adet" class="on">Adet</button><button data-v="pct">Yüzde %</button></div>
+      </div>
+      <div class="grow"><span id="imzaInfo"></span></div>
+    </div>
+    <p class="sub" style="margin:0 0 10px">Seçilen partinin tekliflerine <b>hangi partiden ay ay kaç imza</b> geldiği · her çizgi bir imzacı parti (kendi grubu dahil) · <b>sadece kanun</b> (önerge tek imzalı). Bir <b>partiye tıkla</b> → izole et.</p>
+    <div class="legend" id="imzaLegend"></div>
+    <div class="ttl" id="imzaTtl"></div>
+    <div id="imzaChart"></div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+</div>
+
+<script type="module">
+import { partiRenk, KONU_RENK, sayfaCanlandir, temaDegistir } from './ortak.js';
+sayfaCanlandir();
+const partyColor = partiRenk;
+
+const $ = (id) => document.getElementById(id);
+$('themeTgl').addEventListener('click', temaDegistir);
+const W = 1160, H = 360, M = { l:40, r:14, t:12, b:52 };
+const PW = W - M.l - M.r, PH = H - M.t - M.b;
+const MINDEN = 3;
+const AY = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+const ayLbl = (iso) => `${AY[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
+
+let DATA = null, kaynak = '', parti = '', olcek = 'pct', gorunum = 'konu', konu = 'Ekonomi & Finans';
+const sel = new Set();
+const parSel = new Set();
+
+const params = new URLSearchParams(location.search);
+let AKTIF_DONEM = 28;
+let DONEM = params.get('donem') || String(AKTIF_DONEM);
+const api = (yol, ek = {}) => {
+  const qs = new URLSearchParams({ donem: DONEM, ...ek });
+  return `/api/ozet/${yol}?${qs}`;
+};
+
+async function donemSeciciKur() {
+  let m;
+  try { m = await (await fetch('/api/ozet/meta')).json(); } catch (e) { return; }
+  const list = (m?.donemler?.length ? m.donemler : [AKTIF_DONEM]).slice().sort((a, b) => b - a);
+  AKTIF_DONEM = list[0];
+  const kismiKon = new Set((m?.etl_durum ?? []).filter((x) => x.kaynak === 'konusma' && x.durum === 'kismi').map((x) => x.donem));
+  if (!list.map(String).includes(DONEM)) DONEM = String(list[0]);
+  $('donemSel').innerHTML = list.map((d) => {
+    const _k = kismiKon.has(d);
+    const _t = _k ? ' title="Bu dönemde konuşma verisi eski Meclis arşivinden geliyor; tutanak satır sarması nedeniyle SÖZ (konuşma) bazlı parti payları eksik olabilir. Kanun ve önerge verileri etkilenmez."' : '';
+    return `<option value="${d}"${String(d) === DONEM ? ' selected' : ''}${_t}>${d}. Dönem${d === AKTIF_DONEM ? ' (güncel)' : ''}${_k ? ' · söz verisi kısmi' : ''}</option>`;
+  }).join('');
+  $('donemSel').addEventListener('change', (ev) => {
+    DONEM = ev.target.value;
+    IMZADATA = null; $('imzaParti').innerHTML = ''; parSel.clear();
+    const u = new URL(location.href); u.searchParams.set('donem', DONEM); history.replaceState(null, '', u);
+    load();
+  });
+}
+
+function frame(aylar, max, pct) {
+  const N = aylar.length;
+  const xs = (i) => M.l + (i / (N - 1)) * PW;
+  const ys = (v) => M.t + PH - (v / max) * PH;
+  let g = '';
+  for (let t = 0; t <= 4; t++) {
+    const val = (max * t) / 4, y = ys(val).toFixed(1);
+    g += `<line x1="${M.l}" y1="${y}" x2="${W-M.r}" y2="${y}" stroke="var(--line-2)" stroke-width="1"/>`;
+    g += `<text x="${M.l-6}" y="${(+y+3).toFixed(1)}" fill="var(--muted)" font-size="11" text-anchor="end">${Math.round(val)}${pct ? '%' : ''}</text>`;
+  }
+  let prevYM = null;
+  aylar.forEach((a, i) => {
+    const ym = a.slice(0, 7);
+    if (ym === prevYM) return;
+    prevYM = ym;
+    const x = xs(i).toFixed(1);
+    const mo = +a.slice(5, 7);
+    if (mo === 1 || i === 0) g += `<line x1="${x}" y1="${M.t}" x2="${x}" y2="${M.t+PH}" stroke="var(--line)" stroke-width="1"/>`;
+    const yb = (M.t + PH + 11).toFixed(1);
+    const st = mo === 1 ? 'fill="var(--ink-2)" font-weight="700"' : 'fill="var(--muted)"';
+    g += `<text x="${x}" y="${yb}" ${st} font-size="8.5" text-anchor="end" transform="rotate(-50 ${x} ${yb})">${AY[mo - 1]} ${a.slice(2, 4)}</text>`;
+  });
+  const cross = `<line class="cross" x1="0" y1="${M.t}" x2="0" y2="${M.t+PH}" stroke="var(--petrol)" stroke-width="1" opacity="0" stroke-dasharray="4 3"/>`;
+  return { g, xs, ys, cross };
+}
+
+function buildLegend(kats) {
+  $('legend').innerHTML = kats.map((k) =>
+    `<span class="chip" data-k="${k}"><span class="dot" style="background:${KONU_RENK[k]||'var(--muted)'}"></span>${k}</span>`).join('');
+  $('legend').querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => {
+    const k = c.dataset.k; sel.has(k) ? sel.delete(k) : sel.add(k); syncChips(); render();
+  }));
+}
+function syncChips() {
+  $('legend').querySelectorAll('.chip').forEach((c) => {
+    const on = sel.has(c.dataset.k);
+    c.classList.toggle('on', on);
+    c.style.background = on ? (KONU_RENK[c.dataset.k] || 'var(--muted)') : 'var(--card)';
+  });
+  $('selinfo').textContent = sel.size ? `${sel.size} konu seçili` : 'Tüm konular soluk — birine tıkla';
+}
+
+function renderKonu() {
+  if (!parti) return;
+  const { aylar, kategoriler, seri, partiToplam } = DATA;
+  const s = seri[parti] || {};
+  const N = aylar.length, pct = olcek === 'pct';
+  const raw = (k) => s[k] || new Array(N).fill(0);
+  const tot = new Array(N).fill(0);
+  for (const k of kategoriler) { const a = raw(k); for (let i = 0; i < N; i++) tot[i] += a[i] || 0; }
+  const vals = (k) => pct ? raw(k).map((v, i) => tot[i] ? (v / tot[i]) * 100 : 0) : raw(k);
+  let max = pct ? 100 : 1;
+  if (!pct) for (const k of kategoriler) for (const v of vals(k)) if (v > max) max = v;
+  const { g, xs, ys, cross } = frame(aylar, max, pct);
+  const poly = (k, stroke, w, op) =>
+    `<polyline points="${vals(k).map((v,i)=>`${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ')}" fill="none" stroke="${stroke}" stroke-width="${w}" opacity="${op}" stroke-linejoin="round"/>`;
+  let lines = '';
+  for (const k of kategoriler) if (!sel.has(k)) lines += poly(k, 'var(--line)', 0.7, 0.8);
+  for (const k of kategoriler) if (sel.has(k)) lines += poly(k, KONU_RENK[k] || 'var(--muted)', 1.4, 0.92);
+  $('chartTtl').innerHTML = `${parti} <span>· ${partiToplam[parti]} kayıt · ${kaynak || 'tüm kaynaklar'} · ${pct ? 'hafta-içi konu payı (%)' : 'haftalık adet'}</span>`;
+  $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}">${g}${lines}${cross}</svg>`;
+  $('status').textContent = pct
+    ? `${N} hafta · her nokta = o hafta verilen kaydın % kaçı bu konu · %100 = o hafta sadece bu konu · <${MINDEN} kayıtlı hafta çizilmez (gürültü)`
+    : `${N} hafta (${aylar[0]}→${aylar.at(-1)}) · max ${max}/hafta`;
+  attachHover($('chart'), aylar, (i) => {
+    const s2 = seri[parti] || {};
+    const rows = (sel.size ? [...sel] : kategoriler).map((k) => [k, (s2[k] || [])[i] || 0])
+      .filter((r) => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const head = `<b>${parti} · ${aylar[i]}</b>` + (pct ? ` <span style="color:var(--muted)">· ${tot[i]} kayıt</span>` : '');
+    return head + (rows.length ? rows.map(([k, v]) => {
+      const disp = pct ? `${tot[i] ? Math.round(v / tot[i] * 1000) / 10 : 0}% <span style="color:var(--muted)">(${v})</span>` : v;
+      return `<div class="row"><span style="color:${KONU_RENK[k]}">■ ${k}</span> <b>${disp}</b></div>`;
+    }).join('') : '<div>—</div>');
+  });
+}
+
+function buildPartyLegend() {
+  const parties = DATA.partiler;
+  $('legend').innerHTML = parties.map((p) =>
+    `<span class="chip" data-p="${p}"><span class="dot" style="background:${partyColor(p)}"></span>${p} <span style="color:var(--muted)">(${DATA.partiToplam[p]})</span></span>`).join('');
+  $('legend').querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => {
+    const p = c.dataset.p; parSel.has(p) ? parSel.delete(p) : parSel.add(p); syncParties(); render();
+  }));
+}
+function syncParties() {
+  $('legend').querySelectorAll('.chip').forEach((c) => {
+    const on = parSel.has(c.dataset.p);
+    c.classList.toggle('on', on);
+    c.style.background = on ? partyColor(c.dataset.p) : 'var(--card)';
+  });
+  $('selinfo').textContent = parSel.size ? `${parSel.size} parti · konu: ${konu}` : 'Kıyas için parti seç';
+}
+
+function partiSerisi(p) {
+  const { aylar, kategoriler, seri } = DATA;
+  const N = aylar.length, pct = olcek === 'pct';
+  const sp = seri[p] || {};
+  const tot = new Array(N).fill(0);
+  for (const k of kategoriler) { const a = sp[k] || []; for (let i = 0; i < N; i++) tot[i] += a[i] || 0; }
+  const topic = sp[konu] || new Array(N).fill(0);
+  const vals = topic.map((v, i) => pct ? (tot[i] < MINDEN ? null : (v / tot[i]) * 100) : v);
+  return { vals, tot, topic };
+}
+
+function renderParti() {
+  const { aylar } = DATA;
+  const N = aylar.length, pct = olcek === 'pct';
+  const parties = DATA.partiler.filter((p) => parSel.has(p));
+  const series = parties.map((p) => ({ p, ...partiSerisi(p) }));
+  let max = 1;
+  for (const s of series) for (const v of s.vals) if (v != null && v > max) max = v;
+  max = pct ? Math.min(100, Math.max(5, Math.ceil(max / 5) * 5)) : Math.max(1, Math.ceil(max));
+  const { g, xs, ys, cross } = frame(aylar, max, pct);
+  const seg = (vals, stroke) => {
+    let out = '', run = [];
+    const flush = () => {
+      if (run.length > 1) out += `<polyline points="${run.join(' ')}" fill="none" stroke="${stroke}" stroke-width="1.4" opacity="0.92" stroke-linejoin="round"/>`;
+      else if (run.length === 1) { const [cx, cy] = run[0].split(','); out += `<circle cx="${cx}" cy="${cy}" r="1.7" fill="${stroke}" opacity="0.92"/>`; }
+      run = [];
+    };
+    vals.forEach((v, i) => { if (v == null) flush(); else run.push(`${xs(i).toFixed(1)},${ys(v).toFixed(1)}`); });
+    flush();
+    return out;
+  };
+  let lines = '';
+  for (const s of series) lines += seg(s.vals, partyColor(s.p));
+  $('chartTtl').innerHTML = `${konu} <span>· ${parties.length} parti · ${kaynak || 'tüm kaynaklar'} · ${pct ? 'partinin hafta-içi gündem payı (%)' : 'haftalık adet'}</span>`;
+  $('chart').innerHTML = parties.length
+    ? `<svg viewBox="0 0 ${W} ${H}">${g}${lines}${cross}</svg>`
+    : `<svg viewBox="0 0 ${W} ${H}">${g}${cross}</svg>`;
+  $('status').textContent = pct
+    ? `${N} hafta · her nokta = o partinin o haftaki gündeminin % kaçı "${konu}" · <${MINDEN} kayıtlı hafta çizilmez (gürültü)`
+    : `${N} hafta · "${konu}" konusunda haftalık kayıt sayısı`;
+  attachHover($('chart'), aylar, (i) => {
+    const rows = series.map((s) => [s.p, s.vals[i], s.topic[i] || 0, s.tot[i] || 0])
+      .filter((r) => r[1] != null).sort((a, b) => b[1] - a[1]);
+    const head = `<b>${konu} · ${aylar[i]}</b>`;
+    return head + (rows.length ? rows.map(([p, v, cnt, t]) => {
+      const disp = pct ? `${Math.round(v * 10) / 10}% <span style="color:var(--muted)">(${cnt}/${t})</span>` : v;
+      return `<div class="row"><span style="color:${partyColor(p)}">■ ${p}</span> <b>${disp}</b></div>`;
+    }).join('') : '<div>— (yetersiz veri)</div>');
+  });
+}
+
+function attachHover(container, aylar, rowsFn) {
+  const svg = container.querySelector('svg'), tip = $('tip');
+  const N = aylar.length;
+  svg.addEventListener('mousemove', (e) => {
+    const r = svg.getBoundingClientRect();
+    let i = Math.round((((e.clientX - r.left) / r.width) * W - M.l) / PW * (N - 1));
+    i = Math.max(0, Math.min(N - 1, i));
+    const x = M.l + (i / (N - 1)) * PW;
+    const cross = svg.querySelector('.cross');
+    cross.setAttribute('x1', x); cross.setAttribute('x2', x); cross.setAttribute('opacity', '0.9');
+    tip.innerHTML = rowsFn(i);
+    tip.style.display = 'block';
+    tip.style.left = Math.min(e.clientX + 16, window.innerWidth - 296) + 'px';
+    tip.style.top = Math.min(e.clientY + 16, window.innerHeight - 260) + 'px';
+  });
+  svg.addEventListener('mouseleave', () => { tip.style.display = 'none'; svg.querySelector('.cross').setAttribute('opacity', '0'); });
+}
+
+function render() {
+  if (!DATA) return;
+  gorunum === 'parti' ? renderParti() : renderKonu();
+}
+
+function applyMode() {
+  const pm = gorunum === 'parti';
+  $('partiFld').style.display = pm ? 'none' : '';
+  $('konuFld').style.display = pm ? '' : 'none';
+  if (pm) { buildPartyLegend(); syncParties(); } else { buildLegend(DATA.kategoriler); syncChips(); }
+  render();
+}
+
+let IMZADATA = null, IMZABOZUK = false, imzaOlcek = 'adet', imzaKey = '';
+const imzaSel = new Set();
+
+let MATRISDATA = null, matrisKey = '';
+async function matrisYukle() {
+  if (matrisKey === DONEM && MATRISDATA) return MATRISDATA;
+  matrisKey = DONEM;
+  try { MATRISDATA = await (await fetch(api('ortak-imza'))).json(); }
+  catch (e) { MATRISDATA = null; }
+  return MATRISDATA;
+}
+
+async function loadImza() {
+  const A = $('imzaParti').value;
+  if (!A) return;
+  $('imzaTtl').textContent = 'Yükleniyor…';
+  const key = A + '|' + DONEM;
+  imzaKey = key;
+  let d;
+  try { d = await (await fetch(api('ortak-imza-zaman', { parti: A }))).json(); }
+  catch (e) {
+    if (key !== imzaKey) return;
+    IMZADATA = null; IMZABOZUK = true;
+    $('imzaChart').innerHTML = `<div style="color:var(--muted);padding:16px">Yüklenemedi: ${e.message}</div>`; return;
+  }
+  if (key !== imzaKey) return;
+  IMZADATA = d; IMZABOZUK = true;
+  if (!IMZADATA.success) { $('imzaChart').innerHTML = '<div style="color:var(--muted);padding:16px">Veri yok</div>'; return; }
+  if (DATA?.aylar?.length && IMZADATA.aylar?.length && IMZADATA.aylar.at(-1) < DATA.aylar[0]) {
+    $('imzaLegend').innerHTML = ''; $('imzaInfo').innerHTML = ''; $('imzaTtl').textContent = '';
+    const md = await matrisYukle();
+    const satir = md?.success ? md.matris?.[A] : null;
+    if (satir && Object.keys(satir).length) {
+      const toplam = md.satirToplam?.[A] || 0;
+      const girdiler = Object.entries(satir).sort((a, b) => b[1] - a[1]);
+      const maxV = girdiler[0][1];
+      $('imzaChart').innerHTML =
+        `<div style="color:var(--muted);padding:6px 4px 14px;font-size:.82rem;line-height:1.5">${DONEM}. dönemin <b>aylara bölünmüş</b> grafiği bu ekranda gösterilemiyor (teknik bir hesaplama kısıtı nedeniyle). Bunun yerine <b>${DONEM}. dönemin TOPLAMI</b> — ayrı, güvenilir bir hesaplamadan — aşağıda: ${toplam} teklifin kaçına hangi partiden imza geldi:</div>` +
+        girdiler.map(([b, n]) => `
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="width:96px;flex:none;font-size:.78rem;color:${partyColor(b)};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b}</span>
+            <div style="flex:1;background:var(--line-2);border-radius:4px;overflow:hidden;height:14px">
+              <div style="width:${(100 * n / maxV).toFixed(1)}%;background:${partyColor(b)};height:100%"></div>
+            </div>
+            <span style="flex:none;width:34px;text-align:right;font-size:.76rem;color:var(--ink-2)">${n}</span>
+          </div>`).join('');
+    } else {
+      $('imzaChart').innerHTML = `<div style="color:var(--muted);padding:16px">${DONEM}. dönemin aylara bölünmüş ortak imza grafiği şu an gösterilemiyor (teknik bir kısıt nedeniyle, gerçek veri bu ekranın tarih aralığının dışında kalıyor). <b>Veri yok demek değildir</b> — üstteki grafik bu dönemde çalışır.</div>`;
+    }
+    return;
+  }
+  IMZABOZUK = false;
+  imzaSel.clear();
+  await matrisYukle();
+  buildImzaLegend();
+  renderImza();
+}
+function buildImzaLegend() {
+  const ps = IMZADATA.partiler || [];
+  $('imzaLegend').innerHTML = ps.length
+    ? ps.map((p) => `<span class="chip" data-p="${p}"><span class="dot" style="background:${partyColor(p)}"></span>${p} <span style="color:var(--muted)">(${IMZADATA.partiToplam[p]})</span></span>`).join('')
+    : '<span style="color:var(--muted);font-size:.8rem">bu partinin tekliflerine hiç ortak imza gelmemiş</span>';
+  $('imzaLegend').querySelectorAll('.chip').forEach((c) => c.addEventListener('click', () => {
+    const p = c.dataset.p; imzaSel.has(p) ? imzaSel.delete(p) : imzaSel.add(p); syncImzaChips(); renderImza();
+  }));
+}
+function syncImzaChips() {
+  $('imzaLegend').querySelectorAll('.chip').forEach((c) => {
+    const on = imzaSel.has(c.dataset.p);
+    c.classList.toggle('on', on);
+    c.style.background = on ? partyColor(c.dataset.p) : 'var(--card)';
+  });
+}
+function renderImza() {
+  if (!IMZADATA || IMZABOZUK) return;
+  const { aylar, partiler, seri, parti, toplamTeklif, teklifAy } = IMZADATA;
+  const cosigners = partiler;
+  const pct = imzaOlcek === 'pct';
+  const N = aylar.length;
+  const vals = (b) => {
+    const arr = seri[b] || new Array(N).fill(0);
+    return pct ? arr.map((v, i) => (teklifAy[i] || 0) < 2 ? null : (v / teklifAy[i]) * 100) : arr;
+  };
+  const shown = imzaSel.size ? cosigners.filter((b) => imzaSel.has(b)) : cosigners;
+  let max = 1;
+  for (const b of shown) for (const v of vals(b)) if (v != null && v > max) max = v;
+  max = pct ? Math.min(100, Math.max(5, Math.ceil(max / 5) * 5)) : Math.max(1, Math.ceil(max));
+  const { g, xs, ys, cross } = frame(aylar, max, pct);
+  const seg = (b, stroke, w, op) => {
+    let out = '', run = [];
+    const flush = () => {
+      if (run.length > 1) out += `<polyline points="${run.join(' ')}" fill="none" stroke="${stroke}" stroke-width="${w}" opacity="${op}" stroke-linejoin="round"/>`;
+      else if (run.length === 1) { const [cx, cy] = run[0].split(','); out += `<circle cx="${cx}" cy="${cy}" r="${(+w) + 0.4}" fill="${stroke}" opacity="${op}"/>`; }
+      run = [];
+    };
+    vals(b).forEach((v, i) => { if (v == null) flush(); else run.push(`${xs(i).toFixed(1)},${ys(v).toFixed(1)}`); });
+    flush(); return out;
+  };
+  let lines = '';
+  if (imzaSel.size) for (const b of cosigners) if (!imzaSel.has(b)) lines += seg(b, 'var(--line)', 0.7, 0.5);
+  for (const b of shown) lines += seg(b, partyColor(b), 1.4, 0.92);
+  const matrisToplam = MATRISDATA?.success ? MATRISDATA.satirToplam?.[parti] : undefined;
+  const capraz = (matrisToplam == null || matrisToplam === toplamTeklif) ? ''
+    : ` <span style="color:var(--petrol)" title="Bu grafik yalnız belirli bir tarihe yerleştirilebilen teklifleri sayar; tarihsiz kalan birkaç teklif eklenince toplam ${matrisToplam} olur.">· not: tarihi olmayan birkaç teklifle birlikte toplam ${matrisToplam}</span>`;
+  $('imzaInfo').innerHTML = `<span style="font-size:.78rem;color:var(--muted)">${toplamTeklif} teklif${capraz} · ${pct ? 'A’nın o haftaki tekliflerinin % kaçına imza' : 'haftalık ortak imza sayısı'}</span>`;
+  $('imzaTtl').innerHTML = `${parti} tekliflerine kim imza atmış <span>· çizgiler = imzacı parti · ${parti} = kendi grubu</span>`;
+  $('imzaChart').innerHTML = `<svg viewBox="0 0 ${W} ${H}">${g}${lines}${cross}</svg>`;
+  attachHover($('imzaChart'), aylar, (i) => {
+    const rows = cosigners.map((b) => [b, (seri[b] || [])[i] || 0]).filter((r) => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const head = `<b>${parti} · ${aylar[i]}</b>` + (pct ? ` <span style="color:var(--muted)">· ${teklifAy[i] || 0} teklif</span>` : '');
+    return head + (rows.length ? rows.map(([b, v]) => {
+      const disp = pct ? `${teklifAy[i] ? Math.round(v / teklifAy[i] * 1000) / 10 : 0}% <span style="color:var(--muted)">(${v})</span>` : v;
+      return `<div class="row"><span style="color:${partyColor(b)}">■ ${b}</span> <b>${disp}</b></div>`;
+    }).join('') : '<div>—</div>');
+  });
+}
+
+let dataKey = '';
+async function load() {
+  $('status').textContent = 'Yükleniyor…';
+  const key = DONEM + '|' + kaynak;
+  dataKey = key;
+  let d;
+  try {
+    const r = await fetch(api('parti-ay-konu', kaynak ? { kaynak } : {}));
+    d = await r.json();
+  } catch (e) {
+    if (key !== dataKey) return;
+    $('status').textContent = 'Backend’e ulaşılamadı (8000 açık mı?): ' + e.message; return;
+  }
+  if (key !== dataKey) return;
+  DATA = d;
+  if (!DATA.success) { $('status').textContent = 'Hata'; return; }
+  document.title = `Parti × Hafta × Konu · ${DONEM}. Dönem`;
+  $('ftDonem').textContent = `Dönem ${DONEM}`;
+  $('ftAralik').textContent = DATA.aylar.length ? `${ayLbl(DATA.aylar[0])} → ${ayLbl(DATA.aylar.at(-1))}` : '—';
+  const psel = $('parti');
+  psel.innerHTML = DATA.partiler.map((p) => `<option value="${p}">${p} (${DATA.partiToplam[p]})</option>`).join('');
+  if (!parti || !DATA.partiler.includes(parti)) parti = DATA.partiler[0];
+  psel.value = parti;
+  const ksel = $('konu');
+  ksel.innerHTML = DATA.kategoriler.map((k) => `<option value="${k}">${k}</option>`).join('');
+  if (!DATA.kategoriler.includes(konu)) konu = DATA.kategoriler[0];
+  ksel.value = konu;
+  if (parSel.size === 0) for (const p of ['CHP', 'AKP', 'DEM', 'IYI']) if (DATA.partiler.includes(p)) parSel.add(p);
+  const isel = $('imzaParti');
+  if (!isel.options.length) {
+    isel.innerHTML = DATA.partiler.map((p) => `<option value="${p}">${p} (${DATA.partiToplam[p]})</option>`).join('');
+    isel.value = DATA.partiler.includes('AKP') ? 'AKP' : DATA.partiler[0];
+  }
+  applyMode();
+  if (!IMZADATA) loadImza();
+}
+
+$('gorunum').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  $('gorunum').querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on'); gorunum = b.dataset.v; applyMode();
+}));
+$('parti').addEventListener('change', (e) => { parti = e.target.value; render(); });
+$('konu').addEventListener('change', (e) => { konu = e.target.value; syncParties(); render(); });
+$('imzaParti').addEventListener('change', () => loadImza());
+$('imzaOlcek').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  $('imzaOlcek').querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on'); imzaOlcek = b.dataset.v; renderImza();
+}));
+$('kaynak').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  $('kaynak').querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on'); kaynak = b.dataset.v; load();
+}));
+$('olcek').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+  $('olcek').querySelectorAll('button').forEach((x) => x.classList.remove('on'));
+  b.classList.add('on'); olcek = b.dataset.v; render();
+}));
+$('clear').addEventListener('click', (e) => {
+  e.preventDefault();
+  if (gorunum === 'parti') { parSel.clear(); syncParties(); } else { sel.clear(); syncChips(); }
+  render();
+});
+
+donemSeciciKur().then(load);
+</script>
+</body>
+</html>

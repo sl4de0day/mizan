@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mizan · Vekiller</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+
+  :root { --faint:#7288ae; --ret:#111844; --cekimser:#eae0cf; --ret-wash:#7288ae; }
+  :root[data-theme="light"] { --faint:#7288ae; --ret:#111844; --cekimser:#eae0cf; --ret-wash:#7288ae; }
+  :root[data-theme="dark"] { --faint:#4b5694; --ret:#eae0cf; --cekimser:#111844; --ret-wash:#4b5694; }
+
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; }
+
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between; padding:10px 18px;
+    background:color-mix(in srgb, var(--paper) 86%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.1rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); }
+
+  .nav-r { display:flex; gap:8px; align-items:center; min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .nav-r::-webkit-scrollbar { display:none; }
+  .nav-r a { font-size:.8rem; font-weight:700; text-decoration:none; color:var(--petrol-ink); padding:6px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .theme-tgl { width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.9rem; cursor:pointer; }
+
+  .wrap { max-width:820px; margin:0 auto; padding:22px 18px 60px; }
+  .back { text-decoration:none; color:var(--petrol); font-weight:700; font-size:.8rem; }
+  h1 { font-family:var(--serif); font-weight:600; font-size:2rem; letter-spacing:-.01em; margin:8px 0 0; }
+  .lede { color:var(--ink-2); font-size:.95rem; margin:10px 0 0; max-width:60ch; }
+  .lede b { color:var(--ink); font-weight:600; }
+
+  .controls { display:flex; flex-wrap:wrap; gap:14px; margin:22px 0 6px; align-items:flex-end; }
+  .fld > label { display:block; font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; }
+  select { font-family:var(--sans); font-size:.9rem; font-weight:600; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:8px 11px; cursor:pointer; min-width:190px; max-width:100%; }
+  input[type=search] { font-family:var(--sans); font-size:.9rem; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:9px; padding:8px 11px; min-width:180px; max-width:100%; }
+  input[type=search]::placeholder { color:var(--muted); }
+  .vkil { font-size:.68rem; font-weight:600; color:var(--petrol-ink); background:var(--petrol-wash); padding:2px 7px; border-radius:999px; margin-left:6px; }
+  .hint { font-size:.8rem; color:var(--muted); }
+
+  .card { padding:16px 16px 12px; }
+  .card .sub { margin-bottom:12px; }
+  #empty { color:var(--muted); padding:18px 2px; font-size:.9rem; }
+
+  .vk { border-top:1px solid var(--line-2); }
+  .vk:first-child { border-top:0; }
+  .vkhead { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; padding:11px 4px; cursor:pointer; background:none; border:none; width:100%; text-align:left; font:inherit; color:inherit; }
+  .vkhead:hover .vkad { color:var(--petrol); }
+  .vkad { font-size:.92rem; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:8px; }
+  .vkad .d { width:10px; height:10px; border-radius:50%; flex:none; }
+  .vkparti { font-size:.72rem; font-weight:600; color:var(--muted); }
+  .vkdegis { margin-left:5px; font-weight:600; color:var(--ret); }
+  .oparti { font-size:.62rem; font-weight:700; color:var(--muted); margin-left:6px; }
+  .vkmeta { display:flex; align-items:center; gap:10px; }
+
+  .vksay { font-size:.74rem; font-weight:700; color:var(--ink-2); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .vksay small { font-weight:500; color:var(--muted); }
+
+  .vkort { font-size:.66rem; font-weight:600; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
+  .vkbar { display:flex; height:16px; width:150px; border-radius:4px; overflow:hidden; background:var(--line-2); }
+  .vkbar i { height:100%; display:block; }
+  .vkbar i.kabul { background:var(--petrol); } .vkbar i.ret { background:var(--ret); }
+  .vkbar i.cekimser { background:var(--cekimser); } .vkbar i.katilmadi { background:var(--faint); }
+  .vkfarkli { font-size:.66rem; font-weight:700; color:var(--ret); background:var(--ret-wash); padding:2px 7px; border-radius:999px; white-space:nowrap; }
+  .vkchev { color:var(--muted); font-size:.8rem; transition:transform .2s; }
+  .vk[aria-expanded="true"] .vkchev { transform:rotate(90deg); }
+  .vkbody { display:none; padding:2px 4px 14px; }
+  .vk[aria-expanded="true"] .vkbody { display:block; }
+  .vksum { font-size:.82rem; color:var(--ink-2); margin-bottom:10px; }
+  .vksum b { color:var(--petrol-ink); font-variant-numeric:tabular-nums; }
+  .oylist { display:flex; flex-direction:column; }
+  .orow { display:grid; grid-template-columns:auto auto 1fr auto; align-items:center; gap:10px; padding:5px 0; border-top:1px solid var(--line-2); font-size:.8rem; }
+  .orow:first-child { border-top:0; }
+  .otag { font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:5px; white-space:nowrap; letter-spacing:.02em; }
+  .otag.kabul { background:var(--petrol-wash); color:var(--petrol-ink); }
+  .otag.ret { background:var(--ret-wash); color:var(--ret); }
+  .otag.cekimser { background:var(--line-2); color:var(--ink-2); }
+  .otag.katilmadi { background:transparent; color:var(--muted); border:1px solid var(--line); }
+
+  .otxt { color:var(--ink-2); overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.35; }
+  .okay { font-size:.62rem; font-weight:700; margin-left:8px; color:var(--muted); text-decoration:none; white-space:nowrap; }
+  .okay:hover { color:var(--ink-2); text-decoration:underline; }
+  .oyok { color:var(--muted); font-style:italic; }
+  .okno { font-size:.62rem; font-weight:700; color:var(--muted); margin-left:6px; white-space:nowrap; }
+  .otar { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .ofarkli { font-size:.62rem; font-weight:700; color:var(--ret); white-space:nowrap; }
+
+  .soz { margin-top:14px; border-top:1px solid var(--line-2); padding-top:10px; }
+  .sozbaslik { font-size:.66rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:7px; }
+  .sozrow { display:grid; grid-template-columns:auto 1fr; gap:10px; padding:6px 0; border-top:1px solid var(--line-2); text-decoration:none; color:inherit; align-items:start; }
+  .sozrow:first-of-type { border-top:0; }
+  .sozrow:hover .sozmetin { color:var(--petrol); }
+  .soztar { font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+  .sozmetin { font-size:.8rem; color:var(--ink-2); line-height:1.4; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .soznot { font-size:.7rem; color:var(--muted); margin-top:8px; }
+
+  .hs-cbar-block { margin:2px 0 12px; }
+  .hs-cbar-row { display:flex; align-items:center; gap:8px; padding:3px 0; font-size:.76rem; }
+  .hs-cbar-lbl { flex:0 0 34%; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .hs-cbar-track { flex:1; }
+  .hs-cbar-num { flex:0 0 auto; color:var(--muted); font-variant-numeric:tabular-nums; text-align:right; min-width:3.4em; }
+  .legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:6px; font-size:.76rem; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; color:var(--ink-2); font-weight:600; }
+  .legend i { width:12px; height:12px; border-radius:3px; }
+  footer { text-align:center; color:var(--muted); font-size:.76rem; padding:34px 0 0; margin-top:28px; border-top:1px solid var(--line); }
+  footer a { color:var(--petrol-ink); }
+  @media (max-width:560px) {
+    h1 { font-size:1.55rem; }
+    .vkbar { width:96px; }
+    .vkhead { grid-template-columns:1fr auto; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <span class="wordmark" aria-hidden="true"></span>
+  <div class="nav-r"><button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button></div>
+</nav>
+
+<div class="wrap">
+  <a class="back" href="/">← Ana sayfa</a>
+  <h1>Vekiller</h1>
+  <p class="lede">28. dönemde <b>kim nasıl oy verdi</b> — vekil vekil, ilinden. Bir il seç: o ilin vekillerinin açık oylamalardaki <b>kabul / ret / çekimser / katılmadı</b> dökümünü ve partisinden farklı oy verdikleri anları gör. Bir vekile tıkla, tam oy geçmişi açılsın.</p>
+
+  <div class="controls">
+    <div class="fld"><label>İl seç</label><select id="ilSel"><option value="">— il seçin —</option></select></div>
+
+    <div class="fld"><label>ya da vekil adı ara</label><input id="araIn" type="search" placeholder="örn. Özgür" autocomplete="off" /></div>
+    <span class="hint" id="ilHint"></span>
+  </div>
+
+  <div class="card" id="vkCard" hidden>
+    <div class="ttl" id="vkTtl"></div>
+    <div class="sub" id="vkSub"></div>
+    <div id="vekiller"></div>
+    <div class="legend">
+      <span><i style="background:var(--petrol)"></i>Kabul</span>
+      <span><i style="background:var(--ret)"></i>Ret</span>
+      <span><i style="background:var(--cekimser);outline:1px solid var(--line)"></i>Çekimser</span>
+      <span><i style="background:var(--faint)"></i>Katılmadı</span>
+    </div>
+    <details class="cnote" id="oyNot"><summary><b>Nasıl okunur</b> — bir "devamsızlık karnesi" değildir; vekil oyu yalnız 28. dönemde var</summary><div class="cnote-body">Vekil bazlı oy dökümü yalnız <b>28. dönemde</b> var — TBMM 26 ve 27. dönem cetvelini taranmış görüntü olarak yayımladığı için o dönemler çıkarılamıyor. Buradaki sayılar TBMM'nin Basılmış tutanağındaki cetvelin kendi özet kutusuyla <b>birebir doğrulanmıştır</b>. <b>Katılmadı</b> tek bir anlam taşımaz: Meclis Başkanı ve bakanlar açık oylamada oy kullanmayabilir, izin/hastalık/eşleştirilmiş yokluk da katılmama sayılır. <b>Partisinden farklı oy</b>, o oylamada partisinin çoğunluk oyundan ayrı oy demektir; bir değer yargısı değil, olgudur (bağımsızlarda tanımsızdır).</div></details>
+  </div>
+
+  <div class="card" id="farkliCard" hidden>
+    <div class="ttl">Partisinin çoğunluğundan farklı oy verenler</div>
+    <div class="sub">Bir vekilin, partisinin o oylamadaki <b>çoğunluk oyundan</b> ayrı oy vermesi. Değer yargısı değil, olgu — bağımsızlarda tanımsızdır.</div>
+    <div id="farkliListe"></div>
+  </div>
+
+  <div class="card" id="sozCard">
+    <div class="ttl">Genel Kurul'da bu kelime kimin ağzından çıktı?</div>
+    <div class="sub">Konuşma tutanaklarında kelime ara — konu etiketine değil, <b>metnin kendisine</b> bakar.</div>
+    <div class="fld" style="margin-bottom:12px"><input id="sozIn" type="search" placeholder="örn. asgari ücret, deprem, kayyum" autocomplete="off" /></div>
+    <div id="sozSonuc"></div>
+  </div>
+
+  <div class="card" id="blCard">
+    <div class="ttl">O gün Meclis'te ne konuşuldu?</div>
+    <div class="sub" id="blSub">Bir birleşim seç — o oturumun tüm konuşmaları, konuşulduğu sırayla.</div>
+    <div class="fld" style="margin-bottom:12px">
+      <label class="sr-only" for="blSec">Birleşim</label>
+      <select id="blSec"><option value="">Birleşim seç…</option></select>
+    </div>
+    <div id="blSonuc"></div>
+  </div>
+</div>
+<script type="module">
+import { partiRenk, nf, bar, kirpmaNot, sayfaCanlandir, temaDegistir } from './ortak.js';
+sayfaCanlandir();
+const $ = (id) => document.getElementById(id);
+const API = (qs) => '/api/ozet/vekil-oy' + qs;
+
+$('themeTgl').addEventListener('click', temaDegistir);
+
+const oyTr = { Kabul: 'kabul', Ret: 'ret', 'Çekimser': 'cekimser', 'Katılmadı': 'katilmadi' };
+const cls = (oy) => oyTr[oy] ?? 'katilmadi';
+
+let PARTI_KATILIM = {};
+function katilimKiyas(v) {
+  const p = PARTI_KATILIM?.[v.parti];
+  if (!p || !v.toplam) return '';
+  const bek = Math.round(p.ortanca * v.toplam);
+  return `<span class="vkort" title="Ortanca (medyan): ${p.vekil_n} ${v.parti} vekili küçükten büyüğe sıralandığında tam ortadaki değer — aynı ${nf(v.toplam)} oylama üzerinden. Katılım oranı partiler arasında büyük farklılık gösterir; tek başına bir sayı kişiyi değil ağırlıkla partisini ölçer.">partisinin ortancası ${nf(bek)}</span>`;
+}
+
+function vekilBar(v) {
+  const parcalar = [['kabul', v.kabul], ['ret', v.ret], ['cekimser', v.cekimser], ['katilmadi', v.katilmadi]];
+  return `<div class="vkbar" title="${v.kabul} kabul · ${v.ret} ret · ${v.cekimser} çekimser · ${v.katilmadi} katılmadı">`
+    + parcalar.map(([k, n]) => n > 0 ? `<i class="${k}" style="width:${(100 * n / v.toplam).toFixed(1)}%"></i>` : '').join('') + `</div>`;
+}
+
+async function loadVekil(il, v, bodyEl) {
+  if (bodyEl.dataset.loaded) return;
+  bodyEl.dataset.loaded = '1';
+  let j;
+  try { j = await (await fetch(API(`?il=${encodeURIComponent(il)}&ad=${encodeURIComponent(v.ad)}&soyad=${encodeURIComponent(v.soyad)}`))).json(); }
+  catch (e) { bodyEl.innerHTML = '<div id="empty">Oy geçmişi yüklenemedi.</div>'; return; }
+  if (!j.success || !j.bulundu) { bodyEl.innerHTML = '<div id="empty">Bu vekilin oy kaydı bulunamadı.</div>'; return; }
+  const o = j.ozet;
+  const katildi = o.kabul + o.ret + o.cekimser;
+  const farkliMetin = j.parti === 'BAGIMSIZ' ? '' : (o.farkli > 0
+    ? ` · oy kullandığı <b>${nf(katildi)}</b> oylamanın <b>${o.farkli}</b> tanesinde partisinin çoğunluğundan farklı oy verdi.`
+    : katildi > 0
+      ? ` · oy kullandığı <b>${nf(katildi)}</b> oylamanın hepsinde partisinin çoğunluğuyla aynı yönde oy verdi.`
+      : ` · hiçbir açık oylamada oy kullanmadığı için parti çizgisiyle karşılaştırılabilecek oyu yok.`);
+  const degisMetin = j.parti_n > 1
+    ? ` Bu vekil dönem içinde <b>parti değiştirdi</b>; aşağıda her oyun yanında o andaki partisi yazılıdır.`
+    : '';
+  const pk = j.parti_katilim?.[j.parti];
+  const katilmadiMetin = pk
+    ? `<b>${nf(o.katilmadi)}</b> oylamaya katılmadı — <span class="vkort" title="Ortanca (medyan): ${pk.vekil_n} ${j.parti} vekili küçükten büyüğe sıralandığında tam ortadaki değer — aynı ${nf(o.toplam)} oylama üzerinden. Katılım oranı partiler arasında büyük fark gösterir.">partisinin ortancası ${nf(Math.round(pk.ortanca * o.toplam))}</span>.`
+    : `<b>${nf(o.katilmadi)}</b> oylamaya katılmadı.`;
+  bodyEl.innerHTML =
+    `<div class="vksum"><b>${nf(katildi)}</b>/${nf(o.toplam)} açık oylamada oy kullandı (<b>${nf(o.kabul)}</b> kabul · <b>${nf(o.ret)}</b> ret`
+    + (o.cekimser ? ` · <b>${nf(o.cekimser)}</b> çekimser` : '') + `), ${katilmadiMetin}${farkliMetin}${degisMetin}</div>`
+    + `<div class="oylist">` + j.kayitlar.map((k) => {
+      const fark = k.farkli ? `<span class="ofarkli" title="parti çoğunluğu: ${k.parti_cogunluk}">↔ farklı</span>` : `<span></span>`;
+      const partiEt = j.parti_n > 1 ? `<span class="oparti">${k.parti}</span>` : '';
+      const ss = String(k.sira_sayisi ?? '').trim();
+      const ne = k.kanun_basligi
+        ? `${k.kanun_basligi}${k.kanun_no ? ` <span class="okno">Kanun ${k.kanun_no}</span>` : ''}`
+        : ss && ss !== '0'
+          ? `${ss} sıra sayılı Kanun Teklifi`
+          : `<i class="oyok">konusu tutanakta yazılı değil</i>`;
+      const bag = k.kanun_url
+        ? `<a class="okay" href="${k.kanun_url}" target="_blank" rel="noopener">kanun ↗</a>`
+          + (k.url ? `<a class="okay" href="${k.url}" target="_blank" rel="noopener">tutanak ↗</a>` : '')
+        : k.url ? `<a class="okay" href="${k.url}" target="_blank" rel="noopener">tutanak ↗</a>` : '';
+      return `<div class="orow">
+        <span class="otar">${gunAy(k.tarih)}</span>
+        <span class="otag ${cls(k.oy)}">${k.oy}</span>
+        <span class="otxt">${ne}${partiEt}${bag}</span>
+        ${fark}
+      </div>`;
+    }).join('') + `</div>`;
+
+  loadSoz(il, v, bodyEl);
+  loadOnerge(il, v, bodyEl);
+  loadKomisyon(il, v, bodyEl);
+}
+
+async function loadKomisyon(il, v, bodyEl) {
+  let j;
+  try { j = await (await fetch(`/api/ozet/vekil-komisyon?ad=${encodeURIComponent(v.ad)}&soyad=${encodeURIComponent(v.soyad)}`)).json(); }
+  catch { return; }
+  if (!j?.success || !j.kayitlar?.length) return;
+  bodyEl.insertAdjacentHTML('beforeend',
+    `<div class="soz"><div class="sozbaslik">Komisyon üyelikleri</div>` +
+    j.kayitlar.map((k) => `<div class="sozrow"><span class="sozmetin">${k.komisyon}</span></div>`).join('') +
+    `<div class="soznot">TBMM'nin kendi vekil kaydından; bu bir çıkarım değildir.</div></div>`);
+}
+
+async function loadOnerge(il, v, bodyEl) {
+  let j;
+  try { j = await (await fetch(`/api/ozet/vekil-onerge?il=${encodeURIComponent(il)}&ad=${encodeURIComponent(v.ad)}&soyad=${encodeURIComponent(v.soyad)}&limit=5`)).json(); }
+  catch { return; }
+  if (!j?.success || !j.kayitlar?.length) return;
+  const c = j.cevap ?? {};
+  const oran = c.hic_pay != null
+    ? ` Bu soruların <b>${nf(c.hic)}</b> tanesi (<b>%${String(c.hic_pay).replace('.', ',')}</b>) hiç cevaplanmadı.`
+    : '';
+  bodyEl.insertAdjacentHTML('beforeend',
+    `<div class="soz"><div class="sozbaslik">Yürütmeye sorduğu son sorular</div>` +
+    `<div class="soznot" style="margin:0 0 8px">Bu dönemde <b>${nf(j.toplam)}</b> yazılı soru önergesi verdi.${oran}</div>` +
+    j.kayitlar.map((s) => `<a class="sozrow" href="${s.url}" target="_blank" rel="noopener">
+        <span class="soztar">${gunAy(s.tarih)}</span>
+        <span class="sozmetin">${s.soru}</span>
+      </a>`).join('') +
+    `<div class="soznot">Soruya cevap vermek <b>yürütmenin</b> görevidir; cevapsızlık soruyu soran vekile ` +
+    `atfedilemez. Süre İçtüzük md.99'a göre <b>15 gündür</b>. Oran, süresi hâlâ devam eden ` +
+    `${nf(c.bilinmiyor ?? 0)} önerge <b>hariç</b> ${nf(c.sinif_toplam ?? 0)} önerge üzerinden hesaplandı. ` +
+    `Her satır TBMM kaydına gider.</div></div>`);
+}
+
+const gunAy = (t) => { const [y, a, g] = String(t).split('-'); return `${g}.${a}.${y}`; };
+async function loadSoz(il, v, bodyEl) {
+  let k;
+  try { k = await (await fetch(`/api/ozet/vekil-konusma?il=${encodeURIComponent(il)}&ad=${encodeURIComponent(v.ad)}&soyad=${encodeURIComponent(v.soyad)}&limit=5`)).json(); }
+  catch (e) { return; }
+  if (!k?.success || !k.kayitlar?.length) return;
+  bodyEl.insertAdjacentHTML('beforeend',
+    `<div class="soz"><div class="sozbaslik">Genel Kurul'daki son konuşmaları</div>` +
+    `<div class="soznot" style="margin:0 0 8px">Tutanaklarda adına kayıtlı <b>${nf(k.toplam)}</b> konuşma var — en yeni ${nf(k.kayitlar.length)} tanesi aşağıda.</div>` +
+    k.kayitlar.map((s) => `<a class="sozrow" href="${s.url}" target="_blank" rel="noopener">
+        <span class="soztar">${gunAy(s.tarih)}</span>
+        <span class="sozmetin">${s.alinti}…</span>
+      </a>`).join('') +
+    `<div class="soznot">Alıntılar tutanağın <b>başından</b> kesilmiştir (seçilmemiştir). `
+    + `Satıra tıklayınca <b>o birleşimin tutanağı</b> açılır — tutanak bir oturumun tamamını içerir, `
+    + `konuşmanın kendi sayfasına doğrudan gitmez; sayfada aramanız gerekebilir. `
+    + `Tutanakta “(Devamla)” diye geçen <b>devam konuşmaları</b> bu listede yoktur: o kayıtlarda `
+    + `il bilgisi bulunmadığı için aynı adlı vekiller ayırt edilemiyor.</div></div>`);
+}
+
+function kapsamMetni(kapsam, oylamaN) {
+  if (!kapsam?.ilk || !kapsam?.son) return '';
+  const t = (s) => new Date(s).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const gerilik = kapsam.gerilik_gun > 7
+    ? ` · en son oylama <b>${t(kapsam.oylama_son)}</b>, cetveli henüz yayımlanmadı (<b>${nf(kapsam.gerilik_gun)}</b> gün)`
+    : '';
+  return ` · kapsam <b>${t(kapsam.ilk)} – ${t(kapsam.son)}</b>${gerilik}`;
+}
+
+function renderListe(baslik, altyazi, vekiller, ilGoster, partiKatilim, kapsam) {
+  PARTI_KATILIM = partiKatilim ?? {};
+  $('vkCard').hidden = false;
+  $('vkTtl').textContent = baslik;
+  $('vkSub').innerHTML = altyazi + kapsamMetni(kapsam);
+  $('vekiller').innerHTML = vekiller.map((v, i) => {
+    const renk = partiRenk(v.parti);
+    const farkliRozet = (v.parti !== 'BAGIMSIZ' && v.farkli > 0) ? `<span class="vkfarkli">${v.farkli}× farklı</span>` : '';
+    return `<div class="vk" data-i="${i}" aria-expanded="false">
+      <button class="vkhead" aria-controls="body${i}">
+        <span class="vkad"><span class="d party-dot" style="background:${renk}"></span>${v.ad} ${v.soyad}${ilGoster && v.il ? `<span class="vkil">${v.il}</span>` : ''}<span class="vkparti">${v.parti}${v.parti_n > 1 ? `<span class="vkdegis" title="Dönem içinde parti değiştirdi — her oy, o andaki partisine göre sayılır">· parti değişti</span>` : ''}</span></span>
+        <span class="vkmeta">${farkliRozet}<span class="vksay" title="oy kullandığı / toplam açık oylama">${nf(v.kabul + v.ret + v.cekimser)}<small>/${nf(v.toplam)} oylamada</small></span>${katilimKiyas(v)}${vekilBar(v)}<span class="vkchev">▸</span></span>
+      </button>
+      <div class="vkbody" id="body${i}"></div>
+    </div>`;
+  }).join('');
+  $('vekiller').querySelectorAll('.vk').forEach((el, i) => {
+    el.querySelector('.vkhead').addEventListener('click', () => {
+      const acik = el.getAttribute('aria-expanded') === 'true';
+      el.setAttribute('aria-expanded', acik ? 'false' : 'true');
+      if (!acik) loadVekil(vekiller[i].il, vekiller[i], el.querySelector('.vkbody'));
+    });
+  });
+}
+
+async function ilDegis() {
+  const il = $('ilSel').value;
+  if (!il) { $('vkCard').hidden = true; return; }
+  $('vkCard').hidden = false;
+  $('vkTtl').textContent = il + ' yükleniyor…';
+  $('vkSub').textContent = ''; $('vekiller').innerHTML = '';
+  let j;
+  try { j = await (await fetch(API(`?il=${encodeURIComponent(il)}`))).json(); }
+  catch (e) { $('vekiller').innerHTML = '<div id="empty">Veriye ulaşılamadı — backend açık mı?</div>'; return; }
+  if (!j.success || !j.vekiller?.length) { $('vekiller').innerHTML = '<div id="empty">Bu il için oy kaydı bulunamadı.</div>'; return; }
+  renderListe(`${il} vekilleri`, `${j.vekiller.length} vekil · her çubuk bir vekilin ${nf(j.oylama_n)} açık oylamadaki oy dağılımı`, j.vekiller, false, j.parti_katilim, j.kapsam);
+  history.replaceState(null, '', '?il=' + encodeURIComponent(il));
+}
+
+let araZaman = 0;
+async function araDegis() {
+  const s = $('araIn').value.trim();
+  clearTimeout(araZaman);
+  if (s.length < 3) { if (!$('ilSel').value) $('vkCard').hidden = true; return; }
+  araZaman = setTimeout(async () => {
+    $('ilSel').value = '';
+    let j;
+    try { j = await (await fetch(API(`?ara=${encodeURIComponent(s)}`))).json(); }
+    catch (e) { return; }
+    $('vkCard').hidden = false;
+    if (!j.success || !j.vekiller?.length) {
+      $('vkTtl').textContent = `"${s}" için sonuç yok`;
+      $('vkSub').textContent = ''; $('vekiller').innerHTML = '<div id="empty">Bu adla eşleşen vekil bulunamadı. Adın bir bölümünü yazmayı deneyin.</div>';
+      return;
+    }
+    renderListe(`"${s}" — ${j.vekiller.length} vekil`, `Her çubuk bir vekilin ${nf(j.oylama_n)} açık oylamadaki oy dağılımı`, j.vekiller, true, j.parti_katilim, j.kapsam);
+    history.replaceState(null, '', '?ara=' + encodeURIComponent(s));
+  }, 300);
+}
+
+let sozZaman = 0;
+async function sozAra() {
+  const s = $('sozIn').value.trim();
+  clearTimeout(sozZaman);
+  if (s.length < 3) { $('sozSonuc').innerHTML = ''; return; }
+  sozZaman = setTimeout(async () => {
+    $('sozSonuc').innerHTML = '<div id="empty">Aranıyor…</div>';
+    let j;
+    try { j = await (await fetch(`/api/ozet/konusma-ara?q=${encodeURIComponent(s)}&limit=12`)).json(); }
+    catch (e) { $('sozSonuc').innerHTML = '<div id="empty">Aramaya ulaşılamadı.</div>'; return; }
+    if (!j.success || !j.kayitlar?.length) {
+      $('sozSonuc').innerHTML = `<div id="empty">"${s}" geçen konuşma bulunamadı.</div>`; return;
+    }
+    const pd = j.parti_dagilim ?? {};
+    const partiSatir = (pd.partiler ?? []).filter((r) => r.n > 0);
+    let grafikHtml = '';
+    if (partiSatir.length >= 2) {
+      const max = Math.max(...partiSatir.map((r) => r.n));
+      const kirpma = partiSatir.length > 8 ? kirpmaNot(8, partiSatir.length, { birim: 'parti' }) : '';
+      grafikHtml = `<div class="hs-cbar-block">` +
+        partiSatir.slice(0, 8).map((r) => `<div class="hs-cbar-row"><span class="hs-cbar-lbl">${r.parti}</span>` +
+          `<span class="hs-cbar-track">${bar(r.n, max, partiRenk(r.parti))}</span>` +
+          `<span class="hs-cbar-num">${nf(r.n)}</span></div>`).join('') +
+        `<div class="soznot">Eşleşen <b>${nf(pd.sinif_toplam ?? 0)}</b> konuşma üzerinden; yürütme (${nf(pd.yurutme_n ?? 0)}) ` +
+        `ve partiye bağlanamayan (${nf(pd.bilinmiyor_n ?? 0)}) konuşmalar dahil değildir.${kirpma ? ' ' + kirpma : ''}</div></div>`;
+    }
+    $('sozSonuc').innerHTML =
+      `<div class="sozbaslik">${nf(j.toplam ?? j.kayitlar.length)} konuşmada geçiyor — en yeni ${nf(j.kayitlar.length)} tanesi</div>` +
+      grafikHtml +
+      j.kayitlar.map((k) => `<a class="sozrow" href="${k.url}" target="_blank" rel="noopener">
+          <span class="soztar">${gunAy(k.tarih)}</span>
+          <span class="sozmetin"><b>${k.konusmaci}${k.yurutme ? ` · Yürütme` : (k.parti ? ` · ${k.parti}` : '')}</b><br>${k.alinti}…</span>
+        </a>`).join('') +
+      `<div class="soznot">Alıntı, aranan kelimelerden birinin geçtiği yerden alınmıştır (hepsi, herhangi bir sırada aranır). Satıra tıklayınca ` +
+      `<b>o birleşimin tutanağı</b> açılır (konuşmanın kendi sayfasına doğrudan gitmez). ` +
+      `Arama <b>konu etiketine değil metnin kendisine</b> bakar. ` +
+      `Yalnız <b>en yeni ${nf(j.kayitlar.length)}</b> konuşma listelenir — bu küçük liste, konuyu gündeme getiren partilerin <b>tam dağılımını yansıtmaz</b>. Bakan ve yürütme konuşmalarında parti etiketi yazılmaz (vekil değildirler).</div>`;
+  }, 350);
+}
+
+async function loadFarkli() {
+  let j;
+  try { j = await (await fetch(API('?farkli=1'))).json(); } catch (e) { return; }
+  if (!j?.success || !j.vekiller?.length) return;
+  $('farkliCard').hidden = false;
+  $('farkliListe').innerHTML = j.vekiller.map((v) =>
+    `<a class="sozrow" href="?il=${encodeURIComponent(v.il)}" style="grid-template-columns:auto 1fr auto">
+      <span class="vkfarkli">${nf(v.farkli)}×</span>
+      <span class="sozmetin"><b>${v.ad} ${v.soyad}</b> <span class="vkparti">${v.parti}</span><span class="vkil">${v.il}</span></span>
+      <span class="soztar">${nf(v.kabul + v.ret + v.cekimser)}/${nf(v.toplam)}</span>
+    </a>`).join('') +
+    `<div class="soznot">Partisinin çoğunluğundan en az bir kez ayrılan <b>${nf(j.toplam_farkli ?? j.vekiller.length)}</b> vekil var. ` +
+    `Burada <b>en az ${nf(j.gosterilen_esik ?? 1)} kez</b> ayrılan <b>${nf(j.vekiller.length)}</b> vekil listeleniyor; ` +
+    `daha az ayrılanlar <b>eşitlik bozulmasın diye</b> hiç gösterilmiyor (birini alıp diğerini almak alfabetik keyfilik olurdu). ` +
+    `Sağdaki sayı: oy kullandığı / toplam açık oylama. Bir satıra tıklayınca o ilin tüm vekilleri açılır.</div>`;
+}
+
+async function boot() {
+  let j;
+  try { j = await (await fetch(API(''))).json(); }
+  catch (e) { $('ilHint').textContent = 'Veriye ulaşılamadı — backend (8000) açık mı?'; return; }
+  const iller = j.iller ?? [];
+  $('ilSel').innerHTML = '<option value="">— il seçin —</option>' + iller.map((r) => `<option value="${r.il}">${r.il} (${r.vekil})</option>`).join('');
+  $('ilHint').innerHTML = `${nf(j.oylama_n)} açık oylama · ${iller.length} il · vekil bazlı döküm yalnız 28. dönem`;
+  $('ilSel').addEventListener('change', () => { $('araIn').value = ''; ilDegis(); });
+  $('araIn').addEventListener('input', araDegis);
+  $('sozIn').addEventListener('input', sozAra);
+  $('blSec').addEventListener('change', blSec);
+  blYukle();
+  const farkliP = loadFarkli();
+  const sozUrl = new URLSearchParams(location.search).get('soz');
+  if (sozUrl) {
+    $('sozIn').value = sozUrl; sozAra();
+    farkliP.then(() => $('sozCard').scrollIntoView?.({ behavior: 'smooth', block: 'start' }));
+  }
+  const p = new URLSearchParams(location.search);
+  const url = p.get('il'), ara = p.get('ara');
+  if (url && iller.some((r) => r.il === url)) { $('ilSel').value = url; ilDegis(); }
+  else if (ara) { $('araIn').value = ara; araDegis(); }
+}
+
+async function blYukle() {
+  let j;
+  try { j = await (await fetch('/api/ozet/birlesim?limit=200')).json(); } catch { return; }
+  if (!j?.success || !j.birlesimler?.length) { $('blCard').hidden = true; return; }
+  const t = (d) => new Date(d).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  $('blSec').innerHTML = '<option value="">Birleşim seç…</option>' +
+    j.birlesimler.map((b) => `<option value="${b.birlesim}">${t(b.tarih)} — ${nf(b.konusma_n)} konuşma</option>`).join('');
+  $('blSub').innerHTML = `Bir birleşim seç — o oturumun tüm konuşmaları, konuşulduğu sırayla. ` +
+    `Bu dönemde <b>${nf(j.toplam)}</b> birleşim var; en yeni <b>${nf(j.birlesimler.length)}</b> tanesi listelendi.`;
+}
+
+async function blSec() {
+  const b = $('blSec').value;
+  if (!b) { $('blSonuc').innerHTML = ''; return; }
+  $('blSonuc').innerHTML = '<div id="empty">Yükleniyor…</div>';
+  let j;
+  try { j = await (await fetch('/api/ozet/birlesim?b=' + encodeURIComponent(b))).json(); }
+  catch { $('blSonuc').innerHTML = '<div id="empty">Birleşim yüklenemedi.</div>'; return; }
+  if (!j?.bulundu) { $('blSonuc').innerHTML = '<div id="empty">Bu birleşimin konuşma kaydı bulunamadı.</div>'; return; }
+  $('blSonuc').innerHTML =
+    `<div class="soz"><div class="sozbaslik">${nf(j.sayi)} konuşma · ${j.tarih}</div>` +
+    j.kayitlar.map((k) => `<a class="sozrow" href="${k.url}" target="_blank" rel="noopener">
+        <span class="soztar">${k.parti ?? ''}</span>
+        <span class="sozmetin"><b>${k.konusmaci}</b> — ${k.alinti}…</span>
+      </a>`).join('') +
+    `<div class="soznot">Sıra, tutanaktaki konuşma sırasıdır — seçim yapılmamıştır. Alıntılar metnin
+      <b>başından</b> kesilmiştir. Satıra tıklayınca <b>o birleşimin tutanağı</b> açılır; konuşmanın
+      kendi sayfasına doğrudan gitmez.</div></div>`;
+}
+
+boot();
+</script>
+</body>
+</html>

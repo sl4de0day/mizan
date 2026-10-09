@@ -1,0 +1,1118 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Mizan — Siyasi partileri veriyle tart</title>
+
+<script>document.documentElement.setAttribute('data-theme',(function(){try{return localStorage.getItem('mizan-tema')==='dark'?'dark':'light'}catch(e){return 'light'}})());</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fjalla+One&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/stil.css" />
+<style>
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:16px;
+    line-height:1.55; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  a { color:inherit; }
+  .eyebrow { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.13em; color:var(--petrol); }
+
+  nav { position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+    padding:11px 20px; min-height:54px; background:color-mix(in srgb, var(--paper) 86%, transparent);
+    -webkit-backdrop-filter:saturate(1.4) blur(8px); backdrop-filter:saturate(1.4) blur(8px); border-bottom:1px solid var(--line); }
+  .wordmark { font-family:var(--serif); font-weight:700; font-size:1.16rem; letter-spacing:.02em; display:inline-flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink); }
+
+  .nav-r { display:flex; align-items:center; gap:8px; min-width:0; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .nav-r::-webkit-scrollbar { display:none; }
+  .nav-r a { font-size:.82rem; font-weight:700; text-decoration:none; color:var(--petrol-ink); padding:6px 11px; border:1px solid var(--line); border-radius:8px; background:var(--card); }
+  .nav-r a:hover { border-color:var(--petrol); }
+  .theme-tgl { width:33px; height:33px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-2); font-size:.95rem; cursor:pointer; }
+  .theme-tgl:hover { color:var(--petrol); border-color:var(--petrol); }
+  :focus-visible { outline:2px solid var(--petrol); outline-offset:2px; }
+
+  .wrap { max-width:820px; margin:0 auto; padding:0 20px; }
+
+  html { scroll-snap-type: y mandatory; scroll-padding-top:58px; }
+  .hero, section.blk { scroll-snap-align:start; scroll-snap-stop:always; scroll-margin-top:0; }
+
+  .hero { padding:26px clamp(20px,4.5vw,56px) 40px; box-sizing:border-box;
+    min-height:calc(100vh - 58px); min-height:calc(100svh - 58px);
+    display:flex; flex-direction:column; justify-content:space-between; gap:20px; position:relative; }
+  .hero-ust { display:flex; align-items:center; gap:12px; font-size:.86rem; color:var(--ink-2); }
+  .hero-ust .etiket { flex:none; font-weight:700; font-size:.66rem; text-transform:uppercase;
+    letter-spacing:.11em; color:var(--petrol); }
+  .hero-marka { display:flex; flex-direction:column; align-items:flex-start; gap:14px; }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:translateY(0)} }
+  @media (prefers-reduced-motion:no-preference) {
+    .hero-ust, .brand-dev, .hero-slogan { animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both; }
+    .brand-dev { animation-delay:.07s; }
+    .hero-slogan { animation-delay:.14s; }
+  }
+  .brand-dev { font-family:var(--serif); font-weight:700; font-size:clamp(3rem,9.5vw,7.2rem);
+    line-height:.86; letter-spacing:-.02em; margin:0; color:var(--ink); }
+  .hero-slogan { max-width:56ch; margin:0; color:var(--ink-2); font-size:clamp(1rem,1.7vw,1.22rem); text-wrap:balance; }
+  .hero-slogan b { color:var(--ink); font-weight:600; }
+  .cta { display:flex; gap:11px; flex-wrap:wrap; }
+
+  .hsearch { display:flex; gap:8px; flex-wrap:wrap; width:100%; max-width:720px; }
+  .hsearch input { font-family:var(--sans); font-size:.95rem; color:var(--ink); background:var(--card);
+    border:1px solid var(--line); padding:11px 14px; flex:1 1 420px; min-width:0; }
+  .hsearch input::placeholder { color:var(--muted); }
+  .hsearch button { font-family:var(--sans); font-size:.9rem; font-weight:700; cursor:pointer; flex:none;
+    color:var(--card); background:var(--petrol); border:1px solid var(--petrol); padding:11px 20px; }
+  .hsearch-out { max-width:920px; margin:0; text-align:left; }
+  .hs-ozet { font-size:.85rem; color:var(--ink-2); margin-bottom:10px; }
+  .hs-ozet b { color:var(--petrol-ink); font-variant-numeric:tabular-nums; }
+  .hs-cbar-not { font-size:.7rem; color:var(--muted); margin:10px 0 0; line-height:1.5; }
+  .hs-drill { display:flex; flex-wrap:wrap; gap:8px 18px; margin:12px 0 2px; }
+
+  .hs-cizgi-wrap { position:relative; }
+  .hs-cizgi-wrap svg { display:block; width:100%; height:auto; overflow:visible; font-family:var(--sans); }
+  .hs-nokta { cursor:pointer; }
+  .hs-cizgi-legend { display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:10px; font-size:.74rem; color:var(--ink-2); }
+  .hs-cizgi-legend span { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+
+  .hs-tip { position:absolute; pointer-events:none; z-index:5; transform:translate(-50%,-100%); margin-top:-10px;
+    background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);
+    padding:9px 11px; font-size:.74rem; color:var(--ink-2); min-width:168px; }
+  .hs-tip[hidden] { display:none; }
+  .hs-tip-baslik { display:flex; align-items:center; gap:6px; font-weight:700; color:var(--ink); margin-bottom:5px; }
+  .hs-tip-satir { display:flex; justify-content:space-between; gap:12px; padding:1px 0; }
+  .hs-tip-satir b { color:var(--petrol-ink); font-variant-numeric:tabular-nums; }
+  .hs-tip-satir span:last-child { font-variant-numeric:tabular-nums; }
+
+  section.blk { padding:34px 0; border-top:1px solid var(--line);
+    min-height:calc(100vh - 58px); min-height:calc(100svh - 58px); box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:center; }
+  section.blk:first-of-type { border-top:0; }
+  .blk h2 { font-family:var(--serif); font-weight:600; font-size:1.7rem; line-height:1.12; letter-spacing:-.01em; margin:8px 0 0; text-wrap:balance; }
+  .blk h2 em { font-style:normal; color:var(--petrol); }
+  .blk .desc { color:var(--ink-2); font-size:.96rem; margin:12px 0 0; max-width:56ch; }
+  .blk .desc b { color:var(--ink); font-weight:600; }
+
+  .olgu-baslik { display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+  .yatay-nav-row { display:flex; gap:8px; flex:none; margin-bottom:2px; }
+  .yatay-wrap { margin-top:18px; }
+
+  .yatay-akis { display:flex; align-items:flex-start; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+    scrollbar-width:none; -ms-overflow-style:none; }
+  .yatay-akis::-webkit-scrollbar { display:none; }
+
+  .yatay-slide { flex:0 0 100%; scroll-snap-align:start; min-width:0; }
+  .yatay-slide h3 { font-family:var(--serif); font-weight:600; font-size:1.25rem; line-height:1.16; letter-spacing:-.01em; margin:0; text-wrap:balance; }
+  .yatay-slide h3 em { font-style:normal; color:var(--petrol); }
+  .yatay-slide .desc { color:var(--ink-2); font-size:.9rem; margin:9px 0 0; }
+  .yatay-slide .desc b { color:var(--ink); font-weight:600; }
+  .yatay-slide .demo { margin-top:14px; }
+  .yatay-nav { flex:none; width:36px; height:36px;
+    border-radius:50%; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow);
+    font-size:1.15rem; line-height:1; color:var(--ink-2); cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .yatay-nav:hover { color:var(--petrol); border-color:var(--petrol); }
+  @media (max-width:560px) { .yatay-nav { width:30px; height:30px; font-size:1rem; } }
+
+  .yatay-dots { display:flex; justify-content:center; gap:6px; margin-top:12px; }
+  .yatay-dot { width:6px; height:6px; padding:0; border:none; border-radius:3px; background:var(--line); cursor:pointer; transition:width .2s ease, background-color .2s ease; }
+  .yatay-dot[aria-current="true"] { width:16px; background:var(--petrol); }
+  .yatay-dot:hover { background:color-mix(in srgb, var(--petrol) 60%, var(--line)); }
+
+  .demo { margin-top:20px; border:1px solid var(--line); border-radius:14px; background:var(--card); box-shadow:var(--shadow); overflow:hidden; }
+  .demo-head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 16px; border-bottom:1px solid var(--line-2); font-size:.8rem; }
+  .demo-head .who { display:flex; gap:14px; font-weight:700; }
+  .demo-head .who i { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:baseline; }
+  .demo-head .badge { background:var(--petrol-wash); color:var(--petrol-ink); font-weight:700; font-size:.68rem; padding:3px 8px; border-radius:6px; letter-spacing:.02em; }
+
+  select.badge { font-family:var(--sans); border:none; cursor:pointer; }
+  select.badge:hover { background:color-mix(in srgb, var(--petrol-wash) 75%, var(--petrol) 25%); }
+  .demo-body { padding:8px 16px 14px; }
+  .drow { padding:11px 0; border-top:1px solid var(--line-2); }
+  .drow:first-child { border-top:0; }
+  .drow .kt { font-size:.85rem; font-weight:600; color:var(--ink-2); margin-bottom:7px; }
+  .dbar { display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px; margin:4px 0; }
+  .dtrack { position:relative; height:11px; border-radius:3px; background:var(--line-2); overflow:hidden; }
+  .dtrack i { position:absolute; inset:0 auto 0 0; border-radius:3px; transition:width .7s cubic-bezier(.22,1,.36,1); }
+  .dbar .dl { font-variant-numeric:tabular-nums; font-weight:700; font-size:.82rem; min-width:78px; text-align:right; }
+  .dbar .dl span { font-weight:600; opacity:.6; font-size:.82em; margin-right:4px; }
+  .demo-foot { padding:12px 16px 15px; border-top:1px solid var(--line-2); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .n, .demo-foot .n { font-size:.76rem; color:var(--muted); }
+
+  #mnDemo > summary { cursor:pointer; list-style:none; }
+  #mnDemo > summary::-webkit-details-marker { display:none; }
+  #mnDemo > summary::after { content:'▸ genişlet'; color:var(--muted); font-size:.72rem; font-weight:600; white-space:nowrap; }
+  #mnDemo[open] > summary::after { content:'▾ daralt'; }
+
+  .nlist { padding:6px 16px 2px; }
+  .prow { display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px solid var(--line-2); }
+  .prow:first-child { border-top:0; }
+  .prow .pp { flex:0 0 30%; font-size:.82rem; font-weight:600; color:var(--ink); display:flex; align-items:center; gap:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .prow .pbar { flex:1; display:flex; height:11px; border-radius:3px; background:var(--line-2); overflow:hidden; }
+  .prow .pbar i { display:block; height:100%; flex:none; }
+  .prow .pbar i.kabul { background:var(--petrol); }
+  .prow .pbar i.ret { background:var(--petrol-ink); }
+  .prow .pnum { flex:0 0 auto; font-size:.78rem; color:var(--ink-2); white-space:nowrap; font-variant-numeric:tabular-nums; text-align:right; }
+
+  .krow { display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:start; padding:9px 14px; border-top:1px solid var(--line-2); text-decoration:none; color:inherit; }
+  .krow:first-of-type { border-top:0; }
+  .krow:hover .kbas { color:var(--petrol); }
+  .kbas { text-decoration:none; color:inherit; }
+  .kbas:hover { color:var(--petrol); text-decoration:underline; }
+  .ktbmm { font-size:.66rem; font-weight:700; color:var(--muted); text-decoration:none; margin-left:6px; white-space:nowrap; }
+  .ktbmm:hover { color:var(--petrol-ink); text-decoration:underline; }
+
+  .kparti { font-size:.58rem; font-weight:700; padding:3px 7px; border-radius:5px; white-space:nowrap; color:#eae0cf; margin-top:2px; }
+  .kbas { font-size:.85rem; line-height:1.35; }
+  .ktar { font-size:.72rem; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; margin-top:2px; }
+  @media (max-width:560px) { .krow { grid-template-columns:auto 1fr; } .ktar { grid-column:2; margin-top:0; } }
+
+  .ktrans { font-size:.72rem; color:var(--muted); display:block; margin-top:2px; }
+  .mnActions { grid-column:1 / -1; display:flex; align-items:center; gap:14px; margin-top:4px; }
+  .mnActions .ktbmm { margin-left:0; }
+  .mnGecmis { font-size:.68rem; font-weight:700; color:var(--petrol-ink); background:none; border:none; padding:0; cursor:pointer; text-decoration:underline; font-family:inherit; }
+  .mnGecmis:hover { color:var(--petrol); }
+  .mnGecmisPanel { grid-column:1 / -1; margin-top:4px; padding:9px 11px; background:var(--petrol-wash); border-radius:8px; font-size:.78rem; color:var(--ink-2); line-height:1.6; }
+  .mnGgSatir + .mnGgSatir { border-top:1px solid var(--line-2); padding-top:4px; margin-top:4px; }
+
+  .demo-foot details.n { flex:1 1 100%; }
+  details.n > summary { cursor:pointer; list-style:none; font-weight:600; color:var(--ink-2); font-size:.76rem; }
+  details.n > summary::-webkit-details-marker { display:none; }
+  details.n > summary::before { content:'▸'; margin-right:5px; opacity:.7; }
+  details.n[open] > summary::before { content:'▾'; }
+  details.n .nbody { margin-top:7px; }
+  .arrow { color:var(--petrol-ink); font-weight:700; font-size:.9rem; text-decoration:none; white-space:nowrap; }
+  .arrow:hover { text-decoration:underline; }
+
+  .sources { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:9px; margin-top:18px; }
+  .src { border:1px solid var(--line); border-radius:12px; background:var(--card); padding:13px 14px; font-size:.8rem; color:var(--muted); line-height:1.4; }
+  .src b { display:block; font-family:var(--serif); font-weight:600; font-size:1rem; color:var(--ink); margin-bottom:2px; }
+  .src.on { border-color:var(--petrol); box-shadow:inset 0 0 0 1px var(--petrol); }
+  .tag { display:inline-block; margin-top:9px; font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; padding:2px 7px; border-radius:5px; background:var(--petrol-wash); color:var(--petrol-ink); }
+  .tag.soon { background:var(--line-2); color:var(--muted); }
+  .ilkapi { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 14px; }
+  .ilkapi label { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); }
+  .ilkapi select { font-family:inherit; font-size:.9rem; font-weight:600; color:var(--ink); background:var(--card);
+    border:1px solid var(--line); border-radius:9px; padding:8px 11px; cursor:pointer; min-width:170px; max-width:100%; }
+  .ilgit { font-size:.84rem; font-weight:700; color:var(--petrol-ink); text-decoration:none; border:1px solid var(--line);
+    border-radius:9px; padding:8px 13px; background:var(--card); }
+  .ilgit:hover { border-color:var(--petrol); }
+  .ilnot { font-size:.78rem; color:var(--muted); }
+  @media (max-width:560px) { .ilkapi { gap:8px } .ilkapi select { flex:1 1 100% } }
+  .topics { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .tchip { display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:999px; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-2); font-weight:600; font-size:.88rem; text-decoration:none; }
+  .tchip:hover { border-color:var(--petrol); color:var(--ink); }
+  .tchip .d { width:9px; height:9px; border-radius:50%; }
+
+  .chain { margin-top:22px; }
+
+  footer { text-align:center; color:var(--muted); font-size:.78rem; padding:38px 0 46px; margin-top:30px; border-top:1px solid var(--line); line-height:1.7; }
+  footer a { color:var(--petrol-ink); }
+
+  @media (max-width:560px) {
+
+    .prow { flex-wrap:wrap; row-gap:4px; }
+    .prow .pp { flex:0 0 100%; }
+    .hero { padding:18px 18px 24px; gap:14px; }
+    .hero-marka { gap:10px; }
+    .btn, .btn-ghost { width:100%; justify-content:center; }
+    .blk h2 { font-size:1.42rem; }
+    .demo-head { flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+
+  <span class="wordmark" aria-hidden="true"></span>
+
+  <div class="nav-r"><button class="theme-tgl" id="themeTgl" aria-label="tema">◐</button></div>
+</nav>
+
+<header class="hero">
+  <div class="hero-ust">
+    <span class="etiket">Mizan'da cevabı var</span>
+    <div class="baslik-serit" id="baslikSerit"></div>
+  </div>
+  <div class="hero-marka">
+    <h1 class="brand-dev">Mizan</h1>
+    <p class="hero-slogan">Türkiye siyasetini <b>resmî, doğrulanabilir kaynaklarla</b> tarafsız karşılaştır.</p>
+
+    <div class="cta">
+      <a class="btn" href="/vekil.html">Vekiller →</a>
+      <a class="btn-ghost" id="ctaKarsilastir" href="/karsilastir.html">İki partiyi karşılaştır</a>
+    </div>
+
+    <form class="hsearch" id="araForm" role="search">
+      <label class="sr-only" for="araKutu">Önergelerde ve konuşmalarda ara</label>
+      <input id="araKutu" type="search" autocomplete="off"
+             placeholder="Bir konu yaz: deprem, asgari ücret, öğretmen…" />
+      <button type="submit">Ara</button>
+    </form>
+    <div class="hsearch-out" id="araSonuc" hidden></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="blk">
+    <div class="olgu-baslik">
+      <div>
+        <div class="eyebrow">Veriden bir olgu</div>
+        <h2>Sayılar <em>ne diyor</em>?</h2>
+      </div>
+      <div class="yatay-nav-row">
+        <button class="yatay-nav prev" id="olguPrev" aria-label="Önceki olgu" type="button">‹</button>
+        <button class="yatay-nav next" id="olguNext" aria-label="Sonraki olgu" type="button">›</button>
+      </div>
+    </div>
+    <p class="desc">Üç olgu — oklarla geçiş yap: oylama davranışı, bütçe oylaması, kanunlaşma oranı.</p>
+    <div class="yatay-wrap">
+      <div class="yatay-akis" id="olguAkis">
+        <div class="yatay-slide" id="oySec">
+          <h3>Oyların çoğu <em>kayda geçmiyor</em>.</h3>
+          <p class="desc" id="oyLede">—</p>
+          <div class="demo" id="oyDemo"></div>
+        </div>
+
+        <div class="yatay-slide" id="butceSec">
+          <h3>Bütçeye <em>kim evet dedi</em>.</h3>
+          <p class="desc" id="butceLede">—</p>
+          <div class="demo" id="butceDemo"></div>
+        </div>
+        <div class="yatay-slide" id="demoSec">
+          <h3>Teklif vermek başka, <em>kanunlaştırmak</em> başka.</h3>
+          <p class="desc" id="demoLede">—</p>
+          <div class="demo" id="demo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="yatay-dots" id="olguDots"></div>
+  </section>
+
+  <section class="blk" id="rosterSec" hidden>
+    <div class="eyebrow">Veriden bir olgu</div>
+    <h2>Mecliste <em>kim kaç sandalye</em> tutuyor?</h2>
+    <p class="desc" id="rosterLede">—</p>
+    <div class="demo" id="rosterDemo"></div>
+  </section>
+
+  <section class="blk" id="profilSec" hidden>
+    <div class="eyebrow">Aynı ölçekte kıyas</div>
+    <h2>Her parti <em>hangi aracı</em> kullanıyor?</h2>
+    <p class="desc" id="profilLede">—</p>
+    <div class="demo" id="profilDemo"></div>
+  </section>
+
+  <section class="blk" id="secimSec" hidden>
+    <div class="eyebrow">Veriden bir olgu</div>
+    <h2>Ülke genelinde <em>kim kaç oy</em> aldı?</h2>
+    <p class="desc" id="secimLede">—</p>
+    <div class="demo" id="secimDemo"></div>
+  </section>
+
+  <section class="blk" id="yerelSec" hidden>
+    <div class="eyebrow">Veriden bir olgu</div>
+    <h2>Belediye meclisinde <em>parti dağılımı</em> nasıl?</h2>
+    <p class="desc" id="yerelLede">—</p>
+    <div class="demo" id="yerelDemo"></div>
+  </section>
+
+  <section class="blk">
+    <div class="eyebrow">İleri düzey</div>
+    <h2>Daha <em>derine</em> inmek ister misin?</h2>
+    <p class="desc">Parti, hafta ve konuyu aynı anda kesiştirip serbestçe filtreleyen ayrı bir analiz aracı.</p>
+    <div class="demo">
+
+      <div class="demo-head"><div class="who">Analiz aracı</div></div>
+      <div class="demo-body">
+        <div class="drow"><div class="kt">Bir partinin gündemi hafta hafta: hangi konunun payı ne zaman yükseldi?</div></div>
+        <div class="drow"><div class="kt">Tek konu, partiler yan yana: aynı haftada kim ne kadar yer ayırdı?</div></div>
+        <div class="drow"><div class="kt">Kaynağa göre ayır: kanun teklifi mi, soru önergesi mi — yüzde ya da adet.</div></div>
+        <div class="drow"><div class="kt">Ortak imza: bir partinin tekliflerine hangi partiden ay ay kaç imza geldi?</div></div>
+        <div class="drow"><div class="kt">28, 27 ve 26. dönem arasında geçiş yap; haftalık pencereyi kendin seç.</div></div>
+      </div>
+      <div class="demo-foot"><div class="n">Filtreler serbest; kıyas hacimden bağımsız olsun diye varsayılan ölçek <b>pay (%)</b>.</div>
+      <a class="arrow" href="/arac.html">Aracı aç →</a></div>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="olgu-baslik">
+      <div>
+        <div class="eyebrow">Veriden bir olgu</div>
+        <h2>Peki <em>başka ne</em> var?</h2>
+      </div>
+      <div class="yatay-nav-row">
+        <button class="yatay-nav prev" id="olgu2Prev" aria-label="Önceki olgu" type="button">‹</button>
+        <button class="yatay-nav next" id="olgu2Next" aria-label="Sonraki olgu" type="button">›</button>
+      </div>
+    </div>
+    <p class="desc">İki olgu daha — oklarla geçiş yap: cevaplanma oranı, cevap süresi.</p>
+    <div class="yatay-wrap">
+      <div class="yatay-akis" id="olgu2Akis">
+        <div class="yatay-slide" id="cevapSec">
+          <h3>Meclis soruyor — <em>cevap geliyor mu?</em></h3>
+          <p class="desc" id="cevapLede">—</p>
+          <div class="demo" id="cevapDemo"></div>
+        </div>
+        <div class="yatay-slide" id="csureSec">
+          <h3>Cevap geliyor — <em>ama ne zaman?</em></h3>
+          <p class="desc" id="csureLede">—</p>
+          <div class="demo" id="csureDemo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="yatay-dots" id="olgu2Dots"></div>
+  </section>
+
+  <section class="blk" id="baslaSec">
+    <div class="eyebrow">Nereden başlarsın</div>
+    <h2>Senin <em>ilin</em>, <em>partin</em> ya da <em>konun</em> hangisi?</h2>
+    <p class="desc">İlini seç — oradan seçilen vekillerin <b>nasıl oy verdiğini</b> tek tek gör. Ya da bir parti seç, ya da bir konuda partileri yan yana koy. <small style="color:var(--muted)">Partiler kayıt sayısına göre sıralı.</small></p>
+    <div class="ilkapi" id="ilKapi" hidden>
+      <label for="ilSec">İlin</label>
+      <select id="ilSec"><option value="">İl seç…</option></select>
+      <a class="ilgit" id="ilGit" href="/vekil.html">Vekilleri gör →</a>
+      <span class="ilnot" id="ilNot"></span>
+    </div>
+    <div class="topics" id="parties"></div>
+    <div class="topics" id="topics" style="margin-top:10px"></div>
+  </section>
+
+  <section class="blk" id="meclisNeSec">
+    <div class="eyebrow">Canlı</div>
+    <h2>Meclis şu an <em>ne yapıyor</em>?</h2>
+    <p class="desc" id="mnLede">—</p>
+    <details class="demo" id="mnDemo">
+      <summary class="demo-head"><div class="who">Son hareket</div><div class="badge" id="mnBadge">—</div></summary>
+      <div class="demo-body" id="mnBody"></div>
+      <div class="demo-foot"><div class="n" id="mnNot"></div></div>
+    </details>
+  </section>
+
+  <section class="blk">
+    <div class="eyebrow">Nasıl tartıyoruz</div>
+    <h2>Tarafsızlık bir <em>iddia</em> değil, bir <em>yöntem</em>.</h2>
+    <p class="desc">Mizan siyaseti tek yerden okumaz; resmî ve doğrulanabilir kaynakları bir araya getirir.
+      Her biri partileri farklı bir açıdan tartar.</p>
+
+    <div class="sources" id="sources"></div>
+    <p class="desc">Yeni: <a href="/secim.html" style="color:var(--petrol); font-weight:700; text-decoration:none;">Yüksek Seçim Kurulu'nun kendi sonuç sistemi</a> —
+      milletvekili genel seçimlerinde hangi parti ülke genelinde kaç oy aldı, 2015'ten bu yana dört seçim.</p>
+  </section>
+</div>
+<footer>© 2026 Mizan. Tüm hakları saklıdır.</footer>
+
+<script type="module">
+import { KISA, KONU_RENK, PARTI_RENK, partiRenk, nf, pf, secVeSirala, icgoruOylama, kirpmaNot, olcekNot, fetchJSON, AY, sayfaCanlandir, temaDegistir, baslikSeridi } from './ortak.js';
+sayfaCanlandir();
+const $ = (id) => document.getElementById(id);
+const fmt = nf;
+
+$('themeTgl')?.addEventListener('click', temaDegistir);
+
+baslikSeridi('baslikSerit', [
+  'Bir vekil nasıl oy verdi?',
+  'Bir kanun teklifi ne durumda?',
+  'Hangi parti hangi konuyu gündemine aldı?',
+  'Bir düzenleme Anayasa Mahkemesi\'nden geçti mi?',
+  'İki partiyi nasıl karşılaştırırım?',
+  'Mecliste kim kaç sandalye tutuyor?',
+]);
+
+function tekKartVitrini(akisId, prevId, nextId, dotsId) {
+  const ak = $(akisId);
+  if (!ak) return;
+  const n = ak.children.length;
+  let i = 0;
+  const dotsEl = dotsId ? $(dotsId) : null;
+  if (dotsEl) {
+    dotsEl.innerHTML = Array.from({ length: n }, (_, k) => `<button class="yatay-dot" aria-label="${k + 1}. olgu" type="button"></button>`).join('');
+  }
+  const dots = dotsEl ? [...dotsEl.children] : [];
+  const guncelle = () => dots.forEach((d, k) => d.setAttribute('aria-current', String(k === i)));
+  const boyAyarla = () => { const el = ak.children[i]; if (el) ak.style.height = el.scrollHeight + 'px'; };
+  const kayGit = () => { ak.scrollTo({ left: i * ak.clientWidth, behavior: 'smooth' }); boyAyarla(); };
+  const git = (yon) => {
+    i = ((i + yon) % n + n) % n;
+    kayGit();
+    guncelle();
+  };
+  $(prevId).addEventListener('click', () => git(-1));
+  $(nextId).addEventListener('click', () => git(1));
+  dots.forEach((d, k) => d.addEventListener('click', () => { i = k; kayGit(); guncelle(); }));
+  guncelle();
+  boyAyarla();
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(boyAyarla);
+    for (const el of ak.children) ro.observe(el);
+  }
+}
+tekKartVitrini('olguAkis', 'olguPrev', 'olguNext', 'olguDots');
+tekKartVitrini('olgu2Akis', 'olgu2Prev', 'olgu2Next', 'olgu2Dots');
+
+function derive(d) {
+  const { kategoriler, partiler, seri, partiToplam } = d;
+  const konuToplam = {}, genelKonu = {};
+  for (const p of partiler) {
+    konuToplam[p] = {}; const sp = seri[p] || {};
+    for (const k of kategoriler) {
+      const arr = sp[k] || []; let t = 0; for (const v of arr) t += v;
+      if (t > 0) { konuToplam[p][k] = t; genelKonu[k] = (genelKonu[k] || 0) + t; }
+    }
+  }
+  return { kategoriler, partiler, partiToplam, konuToplam, genelKonu };
+}
+
+async function ilKapisi() {
+  let j;
+  j = await fetchJSON('/api/ozet/vekil-oy'); if (!j) return;
+  const iller = (j?.iller ?? []).filter((x) => x.il);
+  if (!iller.length) return;
+  const sel = $('ilSec'), git = $('ilGit'), not = $('ilNot');
+  sel.innerHTML = '<option value="">İl seç…</option>' +
+    iller.slice().sort((a, b) => a.il.localeCompare(b.il, 'tr'))
+      .map((x) => `<option value="${x.il}">${x.il} (${x.vekil})</option>`).join('');
+  not.textContent = j.oylama_n ? `${iller.length} il · ${j.oylama_n} açık oylamada vekil bazlı döküm` : '';
+  const guncelle = () => {
+    git.href = sel.value ? `/vekil.html?il=${encodeURIComponent(sel.value)}` : '/vekil.html';
+    git.textContent = sel.value ? `${sel.value} vekillerini gör →` : 'Vekilleri gör →';
+  };
+  sel.addEventListener('change', guncelle);
+  guncelle();
+  $('ilKapi').hidden = false;
+}
+
+async function kaynaklarVitrini() {
+  const j = await fetchJSON('/api/ozet/meta');
+  if (!j?.success || !j.kaynaklar) return;
+  const k = j.kaynaklar;
+  const donemAralik = (j.donemler ?? []).length ? `${Math.min(...j.donemler)}–${Math.max(...j.donemler)}. dönem` : '';
+  const ayYil = (iso) => { if (!iso) return ''; const p = String(iso).slice(0, 10).split('-'); return p.length === 3 ? `${AY[+p[1] - 1]} ${p[0]}` : ''; };
+  const aymSon = ayYil(k.aym.son) || 'bugüne';
+  const gazeteSon = ayYil(k.gazete.son) || 'bugüne';
+  const kartlar = [
+    { ad: 'TBMM', not: `${fmt(k.tbmm.kayit)} kayıt · kanun, önerge, konuşma · ${donemAralik}`, url: k.tbmm.url },
+    { ad: 'Anayasa Mahkemesi', not: k.aym.kayit ? `${fmt(k.aym.kayit)} karar · 1962–${aymSon}` : 'veri yok', url: k.aym.url },
+    { ad: 'Resmî Gazete', not: k.gazete.kayit ? `${fmt(k.gazete.kayit)} kayıt · 2015–${gazeteSon}` : 'veri yok', url: k.gazete.url },
+    { ad: 'Yüksek Seçim Kurulu', not: k.ysk.kayit ? `${k.ysk.donemler.length} genel seçim sonucu` : 'veri yok', url: k.ysk.url },
+    { ad: 'Belediye meclisleri', not: k.yerel_yonetim.karar.kayit ? `${k.yerel_yonetim.belediyeler.length} belediye · ${fmt(k.yerel_yonetim.karar.kayit)} karar` : 'veri yok' },
+    { ad: 'Parti programları', not: k.parti_program.kayit ? `${k.parti_program.kayit} resmî belge` : 'veri yok' },
+    { ad: 'TÜİK', not: k.tuik.kayit ? `${k.tuik.gostergeler.length} ekonomik gösterge` : 'veri yok', url: k.tuik.url },
+  ];
+  const adHtml = (s) => s.url ? `<a href="${s.url}" target="_blank" rel="noopener">${s.ad}</a>` : s.ad;
+  $('sources').innerHTML = kartlar.map((s) => `<div class="src"><b>${adHtml(s)}</b>${s.not}</div>`).join('');
+}
+
+const gunAy = (iso) => { if (!iso) return ''; const p = String(iso).slice(0, 10).split('-'); return p.length === 3 ? `${+p[2]} ${AY[+p[1] - 1]}` : ''; };
+const MN_KAYNAK_AD = { kanun: 'KANUN', onerge: 'ÖNERGE', konusma: 'KONUŞMA' };
+
+async function meclisNeYapiyor() {
+  const [oz, gd] = await Promise.all([
+    fetchJSON('/api/ozet/son-hareket?gun=7'),
+    fetchJSON('/api/ozet/gundem?saat=168&limit=20'),
+  ]);
+  if (!oz || !oz.success) return;
+  $('mnBadge').textContent = 'SON 7 GÜN';
+
+  const s = oz.sayim;
+  if (oz.bos || !s || (!s.yeni_teklif && !s.kanunlasan && !s.oylama && !s.konusma)) {
+    $('mnLede').innerHTML = `Son 7 günde kayda geçen bir hareket yok. Meclis'in son birleşimi <b>${gunAy(oz.en_son?.birlesim) || 'bilinmiyor'}</b>.`;
+    $('mnBody').innerHTML = '';
+    $('mnNot').textContent = 'Bu bir veri eksikliği değil — Meclis tatildeyse ya da ara verdiyse kart dürüstçe böyle görünür.';
+    return;
+  }
+
+  const ogeler = [
+    { n: s.yeni_teklif, metin: `<b>${fmt(s.yeni_teklif)}</b> yeni kanun teklifi verildi` },
+    { n: s.kanunlasan, metin: `<b>${fmt(s.kanunlasan)}</b> teklif kanunlaştı` },
+    { n: s.oylama, metin: `<b>${fmt(s.oylama)}</b> açık oylama yapıldı` },
+    { n: s.konusma, metin: `Genel Kurul'da <b>${fmt(s.konusma)}</b> konuşma tutanağa geçti` },
+  ].sort((a, b) => b.n - a.n).map((o) => o.metin);
+  const cumle = ogeler.length > 1
+    ? ogeler.slice(0, -1).join(', ') + ' ve ' + ogeler[ogeler.length - 1]
+    : ogeler[0];
+  $('mnLede').innerHTML = `Son <b>7 günde</b> ${cumle}.`;
+
+  const kanunSatirlari = (oz.kanunlar || []).map((k) => `
+    <a class="krow" href="${k.url || '#'}" target="_blank" rel="noopener">
+      <span class="kparti" style="background:var(--petrol)">KANUNLAŞTI</span>
+      <span class="kbas">${(k.baslik || '').trim()}</span>
+      <span class="ktar">${gunAy(k.tarih)}</span>
+    </a>`).join('');
+
+  const olaylar = (gd && gd.success && gd.olaylar) || [];
+  const olaySatirlari = olaylar.slice(0, 8).map((o) => {
+    const ad = MN_KAYNAK_AD[o.kaynak] || String(o.kaynak || '').toUpperCase();
+    const gecis = o.eski_durum && o.yeni_durum ? `${o.eski_durum} → ${o.yeni_durum}` : (o.yeni_durum || o.durum || '');
+    return `
+    <div class="krow" data-kaynak="${o.kaynak || ''}" data-kaynak-id="${o.kaynak_id || ''}">
+      <span class="kparti" style="background:var(--ink-2)">${ad}</span>
+      <span class="kbas">${(o.baslik || '').trim()}${gecis ? `<span class="ktrans">${gecis}</span>` : ''}</span>
+      <span class="ktar">${gunAy(o.tarih)}</span>
+      <div class="mnActions">
+        <a class="ktbmm" href="${o.detay_url || '#'}" target="_blank" rel="noopener">Kaynağa git →</a>
+        <button class="mnGecmis" type="button">Geçmişini gör</button>
+      </div>
+      <div class="mnGecmisPanel" hidden></div>
+    </div>`;
+  }).join('');
+
+  $('mnBody').innerHTML =
+    (kanunSatirlari ? `<div class="nlist"><div class="kt" style="padding:8px 14px 0">Kanunlaşanlar</div>${kanunSatirlari}</div>` : '') +
+    (olaySatirlari ? `<div class="nlist"><div class="kt" style="padding:8px 14px 0">Durum değişiklikleri</div>${olaySatirlari}</div>` : '');
+
+  $('mnNot').textContent = 'Sıralama, sitenin bu kaydı FARK ETTİĞİ zamana göredir, resmî işlem tarihine değil. '
+    + `Vekil bazlı oy dökümü ayrı ve daha yavaş bir hatta çekiliyor: ${fmt(s.oylama_dokumlu)}/${fmt(s.oylama)} oylamada şu an kim-nasıl-oy-verdi bilgisi var.`;
+}
+
+async function olayGecmisiGoster(row) {
+  const panel = row.querySelector('.mnGecmisPanel');
+  if (!panel.hidden) { panel.hidden = true; return; }
+  panel.hidden = false;
+  if (panel.dataset.dolu) return;
+  panel.innerHTML = 'Yükleniyor…';
+  const kaynak = row.dataset.kaynak, kaynakId = row.dataset.kaynakId;
+  let j;
+  try { j = await (await fetch('/api/ozet/olay-gecmis?' + new URLSearchParams({ kaynak, kaynak_id: kaynakId }))).json(); }
+  catch (e) { panel.innerHTML = 'Geçmiş yüklenemedi.'; return; }
+  if (!j || !j.success || !j.gecmis.length) { panel.innerHTML = 'Bu belge için ayrı bir durum geçmişi kaydı yok.'; return; }
+  panel.dataset.dolu = '1';
+  panel.innerHTML = j.gecmis.map((g) =>
+    `<div class="mnGgSatir">${gunAy(g.olay_tarih)} — ${g.eski_durum ? `${g.eski_durum} → ` : ''}${g.yeni_durum || '(ilk kayıt)'}</div>`,
+  ).join('');
+}
+$('mnBody').addEventListener('click', (e) => {
+  const btn = e.target.closest('.mnGecmis');
+  if (!btn) return;
+  void olayGecmisiGoster(btn.closest('.krow'));
+});
+
+async function boot() {
+  void ilKapisi();
+  void kaynaklarVitrini();
+  void meclisNeYapiyor();
+  let raw;
+  try { const r = await fetch('/api/ozet/parti-ay-konu'); raw = await r.json(); }
+  catch (e) { return; }
+  if (!raw || !raw.success) return;
+  const D = derive(raw);
+
+  const topKonular = Object.entries(D.genelKonu).filter(([k]) => k !== 'Diğer').sort((a, b) => b[1] - a[1]);
+
+  $('topics').innerHTML = topKonular.slice(0, 8).map(([k]) =>
+    `<a class="tchip" href="/konu.html?k=${encodeURIComponent(k)}"><span class="d party-dot" style="background:${KONU_RENK[k]}"></span>${KISA[k]}</a>`).join('')
+    + (topKonular.length > 8 ? `<a class="tchip" href="/karsilastir.html" style="font-weight:700;color:var(--petrol-ink)">+${topKonular.length - 8} konu daha →</a>` : '');
+  const tumP = D.partiler.filter((p) => D.partiToplam[p] >= 150).sort((a, b) => D.partiToplam[b] - D.partiToplam[a]);
+  $('parties').innerHTML = tumP.slice(0, 9).map((p) =>
+    `<a class="tchip" href="/parti.html?p=${encodeURIComponent(p)}"><span class="d party-dot" style="background:${partiRenk(p)}"></span>${p}</a>`).join('')
+    + (tumP.length > 9 ? `<a class="tchip" href="/karsilastir.html" style="font-weight:700;color:var(--petrol-ink)">+${tumP.length - 9} parti daha →</a>` : '');
+  const ctaK = $('ctaKarsilastir');
+  if (ctaK && tumP.length >= 2) ctaK.href = `/karsilastir.html?a=${encodeURIComponent(tumP[0])}&b=${encodeURIComponent(tumP[1])}`;
+}
+function vitrinHata(domId, donem) {
+  const el = $(domId);
+  if (el) el.innerHTML = `<div id="empty">${donem ? donem + '. dönem için' : 'Bu bölüm için'} veri şu an yüklenemedi.</div>`;
+}
+
+async function vitrinYasama(donem) {
+  let j;
+  j = await fetchJSON('/api/ozet/yasama' + (donem ? `?donem=${donem}` : ''));
+  if (!j?.success || !j.partiler?.length) { vitrinHata('demo', donem ?? j?.donem); return; }
+  $('demoLede').innerHTML =
+    `Teklif vermek serbesttir; kanunlaştırmayı komisyon ve Genel Kurul <b>çoğunluğu</b> belirler. ` +
+    `Partilerin verdiği teklif sayısı ve kaçının kanunlaştığı:`;
+  const ilk = j.partiler.slice().sort((a, b) => b.toplam - a.toplam).slice(0, 5);
+  const enCok = ilk[0]?.toplam || 1;
+  $('demo').innerHTML =
+    `<div class="demo-head"><div class="who">Kanun teklifleri → sonuç</div><div class="badge" id="badgeYasama">${j.donem}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="drow"><div class="kt">Çubuk: verilen teklif · sayı: verilen → kanunlaşan</div>` +
+    ilk.map((r) => `<div class="dbar">
+        <div class="dtrack">
+          <i style="width:${Math.max(2, r.toplam / enCok * 100)}%;background:${partiRenk(r.parti)};opacity:.28"></i>
+          <i style="width:${(r.kanunlasti / enCok * 100).toFixed(2)}%;background:${partiRenk(r.parti)};position:absolute;inset:0 auto 0 0"></i>
+        </div>
+        <div class="dl"><span>${r.parti}</span>${fmt(r.toplam)} → <b>${r.kanunlasti > 0 ? fmt(r.kanunlasti) : 'hiçbiri'}</b></div>
+      </div>`).join('') + `</div></div>` +
+    `<div class="demo-foot"><div class="n">${olcekNot(enCok, 'teklif')} ${kirpmaNot(ilk.length, j.partiler.length, { birim: 'parti', gizliPay: null })} Kanunlaşmayı komisyon ve Genel Kurul çoğunluğu belirler; bu bir başarı ölçüsü değildir.</div>` +
+    `<a class="arrow" href="/kanun.html">Kanunları gör →</a></div>`;
+  rozetSec('badgeYasama', j.donem, vitrinYasama);
+}
+
+async function vitrinOylama(donem) {
+  let agg, oy;
+  const dq = donem ? `?donem=${donem}` : '';
+  try {
+    const [ra, ro] = await Promise.all([fetch(`/api/ozet/oylama${dq}`), fetch(`/api/ozet/oy${dq}`)]);
+    if (!ra.ok || !ro.ok) throw new Error(`HTTP ${ra.status}/${ro.status}`);
+    [agg, oy] = await Promise.all([ra.json(), ro.json()]);
+  } catch (e) { vitrinHata('oyDemo', donem); return; }
+  const ic = icgoruOylama(agg);
+  if (!ic) return;
+  $('oyLede').innerHTML = ic;
+
+  const tumu = (oy?.partiler ?? [])
+    .map((r) => ({ ...r, kul: r.kabul + r.ret + r.cekimser }))
+    .filter((r) => r.kul >= 100);
+  const partiler = secVeSirala(tumu, { buyukluk: (r) => r.kul, olcu: (r) => r.ret / r.kul, n: 7 });
+
+  const satir = (ad, yuzde, renk, sag) => `<div class="dbar">
+      <div class="dtrack"><i style="width:${Math.max(2, yuzde)}%;background:${renk}"></i></div>
+      <div class="dl"><span>${ad}</span>${sag}</div>
+    </div>`;
+
+  const partiBloklari = partiler.length >= 2
+    ? `<div class="drow"><div class="kt">Çubuk: vekil dökümü bulunabilen <b>${fmt(oy?.oylama_n ?? 0)}</b> oylamada kullanılan oyda <b>ret payı</b> · yanında <b>katılım</b> ve kaç oydan hesaplandığı</div>` +
+      partiler.map((r) => {
+        const firsat = r.kul + (r.katilmadi ?? 0);
+        const katilim = firsat > 0 ? 100 * r.kul / firsat : 0;
+        return satir(r.parti, 100 * r.ret / r.kul, partiRenk(r.parti),
+          `%${pf(100 * r.ret / r.kul)} ret <small style="color:var(--muted)">· %${pf(katilim)} katılım · ${fmt(r.kul)} oyda</small>`);
+      }).join('') + `</div>`
+    : '';
+
+  $('oyDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Kayda geçen açık oylamalar</div><div class="badge" id="badgeOylama">${agg.donem}. DÖNEM</div></div>` +
+    `<div class="demo-body">` +
+    `<div class="drow"><div class="kt">Çubuk: oylama sayısı · ${agg.ozet.ilk} → ${agg.ozet.son}</div>` +
+    satir('Ret oyu var', 100 * agg.ozet.cekismeli / Math.max(agg.ozet.toplam, 1), 'var(--petrol)', `<b>${fmt(agg.ozet.cekismeli)}</b> oylama`) +
+    satir('Oybirliği', 100 * agg.ozet.oybirligi / Math.max(agg.ozet.toplam, 1), 'var(--muted)', `<b>${fmt(agg.ozet.oybirligi)}</b> oylama`) +
+    `</div>` + partiBloklari + `</div>` +
+    `<div class="demo-foot"><details class="n"><summary>Bu sayı neyi kapsıyor? — bir <b>oy karnesi değildir</b></summary>` +
+    `<div class="nbody">Kanunların çoğu işaretle (el kaldırarak) oylanır ve kimin nasıl oy verdiği kayda geçmez; ` +
+    `burada yalnız açık ve elektronik oylananlar var — kayda geçen <b>${fmt(agg.ozet.toplam)}</b> oylamanın ` +
+    `<b>${fmt(oy?.oylama_n ?? 0)}</b> tanesinde vekil dökümü bulunabildi. Bu korpus anlaşma onaylarına yanlıdır. ` +
+    `Ret payında katılmayanlar paydaya girmez.</div></details>` +
+    `<a class="arrow" href="/parti.html?p=${encodeURIComponent(tumu.slice().sort((a, b) => b.kul - a.kul)[0]?.parti ?? 'CHP')}">Partiye bak →</a></div>`;
+  $('oySec').hidden = false;
+  rozetSec('badgeOylama', agg.donem, vitrinOylama);
+}
+
+async function vitrinButce() {
+  const j = await fetchJSON('/api/ozet/butce');
+  if (!j) { vitrinHata('butceDemo', null); $('butceSec').hidden = false; return; }
+  const kayitlar = (j?.kayitlar ?? []).filter((k) => k.tur !== 'ek-odenek');
+  const butceler = kayitlar
+    .filter((k) => k.tur === 'butce')
+    .map((k) => ({ ...k, yil: (k.baslik.match(/(20\d\d)\s*yılı/i) ?? [])[1] ?? '' }))
+    .filter((k) => k.yil)
+    .map((k) => {
+      const p = (k.partiler ?? []).filter((x) => x.kabul + x.ret > 0);
+      const kabulcu = p.slice().sort((a, b) => b.kabul - a.kabul)[0];
+      const retci = p.slice().sort((a, b) => b.ret - a.ret)[0];
+      return { ...k, gecerli: !!(kabulcu && retci && kabulcu.kabul > 0 && retci.ret > 0) };
+    })
+    .filter((k) => k.gecerli)
+    .sort((a, b) => b.yil - a.yil);
+  if (!butceler.length) return;
+
+  const ciz = (secilen) => {
+    const p = (secilen.partiler ?? []).filter((x) => x.kabul + x.ret > 0);
+    const kabulcu = p.slice().sort((a, b) => b.kabul - a.kabul)[0];
+    const retci = p.slice().sort((a, b) => b.ret - a.ret)[0];
+    $('butceLede').innerHTML =
+      `<b>${secilen.yil}</b> yılı merkezî yönetim bütçesi Genel Kurul'da açık oylandı: ` +
+      `<b>${nf(kabulcu.kabul)}</b> kabul oyunun en büyük bölümü <b>${kabulcu.parti}</b>, ` +
+      `<b>${nf(retci.ret)}</b> ret oyunun en büyük bölümü <b>${retci.parti}</b> vekillerinden geldi.`;
+    const enB = Math.max(1, ...p.map((x) => x.kabul + x.ret));
+    const g = (n) => (100 * n / enB).toFixed(1);
+    const rozet = butceler.length > 1
+      ? `<select class="badge" id="badgeButce" aria-label="Bütçe yılı seç">` +
+        butceler.map((b) => `<option value="${b.yil}"${b.yil === secilen.yil ? ' selected' : ''}>${b.yil}</option>`).join('') +
+        `</select>`
+      : `<div class="badge">${secilen.yil}</div>`;
+    $('butceDemo').innerHTML =
+      `<div class="demo-head"><div class="who">Bütçeye kim evet dedi</div>${rozet}</div>` +
+      `<div class="demo-body"><div class="nlist">` + p.slice(0, 8).map((x) =>
+        `<div class="prow"><div class="pp"><span class="d party-dot" style="background:${partiRenk(x.parti)}"></span>${x.parti}</div>
+          <div class="pbar" title="kabul ${x.kabul} · ret ${x.ret} · katılmadı ${x.katilmadi}">
+            <i class="kabul" style="width:${g(x.kabul)}%"></i><i class="ret" style="width:${g(x.ret)}%"></i></div>
+          <div class="pnum">${nf(x.kabul)} kabul · ${nf(x.ret)} ret</div></div>`).join('') + `</div></div>` +
+      `<div class="demo-foot"><details class="note"><summary>Bu sayı ne değildir</summary><div class="nbody">` +
+      `${j.olcut} ${j.kapsam_uyarisi} ` +
+      `${j.katilmadi_notu ?? ''} ` +
+      `${j.eksik?.not ?? ''}</div></details>` +
+      (secilen.kanit_pdf ? `<a class="arrow" href="${secilen.kanit_pdf}" target="_blank" rel="noopener">Oy cetveli (PDF) →</a>` : '') +
+      `</div>`;
+    if (butceler.length > 1) {
+      $('badgeButce').addEventListener('change', (e) => ciz(butceler.find((b) => b.yil === e.target.value)));
+    }
+  };
+  ciz(butceler[0]);
+  $('butceSec').hidden = false;
+}
+
+let _donemCache = null;
+async function tumDonemler() {
+  if (_donemCache) return _donemCache;
+  try { const m = await (await fetch('/api/ozet/meta')).json(); _donemCache = (m?.donemler ?? [26, 27, 28]).slice(); }
+  catch (e) { _donemCache = [26, 27, 28]; }
+  return _donemCache;
+}
+
+async function rozetSec(id, aktif, yenile) {
+  const div = $(id);
+  if (!div) return;
+  const ds = (await tumDonemler()).slice().sort((a, b) => b - a);
+  div.outerHTML = `<select class="badge" id="${id}" aria-label="Dönem seç">` +
+    ds.map((d) => `<option value="${d}"${Number(d) === Number(aktif) ? ' selected' : ''}>${d}. dönem</option>`).join('') +
+    `</select>`;
+  $(id).addEventListener('change', (e) => yenile(Number(e.target.value)));
+}
+
+async function vitrinCevapSuresi() {
+  const guncelDonem = (await tumDonemler())[0];
+  const j = await fetchJSON(`/api/ozet/cevap-suresi?donem=${guncelDonem}`);
+  if (!j) { vitrinHata('csureDemo', guncelDonem); $('csureSec').hidden = false; return; }
+  const k = (j.kurumlar ?? []).filter((x) => x.ortanca_gun != null);
+  if (k.length < 3) return;
+  const enYavas = k[0], enHizli = k[k.length - 1];
+  $('csureLede').innerHTML =
+    `Yazılı soru önergelerinin cevabı ortalama HAFTALAR sürüyor — ama kurumdan kuruma çok değişiyor. ` +
+    `Örneklemde <b>${enYavas.muhatap}</b> ortanca <b>${nf(enYavas.ortanca_gun)}</b> günde, ` +
+    `<b>${enHizli.muhatap}</b> <b>${nf(enHizli.ortanca_gun)}</b> günde cevaplıyor.`;
+  const maxG = Math.max(...k.map((x) => x.ortanca_gun));
+  $('csureDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Cevap geliyor — ama ne zaman?</div><div class="badge">${guncelDonem}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="nlist">` + k.slice(0, 10).map((x) =>
+      `<div class="prow"><div class="pp" style="flex:0 0 45%">${x.muhatap}</div>
+        <div class="pbar"><i style="width:${(100*x.ortanca_gun/maxG).toFixed(1)}%;background:var(--petrol)"></i></div>
+        <div class="pnum"><b>${nf(x.ortanca_gun)}</b> gün <small style="color:var(--muted)">· n=${x.ornek_n}${x.gecikmis_pay!=null?' · %'+pf(x.gecikmis_pay)+' gecikmiş':''}</small></div></div>`).join('') + `</div></div>` +
+    `<div class="demo-foot"><details class="note"><summary>Bu sayı ne değildir</summary><div class="nbody">` +
+    `${j.olcut} ${j.kapsam_notu} ${j.gecikme_notu}</div></details>` +
+    `<a class="arrow" href="/karsilastir.html">Partilerin gündemine bak →</a></div>`;
+  $('csureSec').hidden = false;
+}
+
+async function vitrinCevap() {
+  const donemler = (await tumDonemler()).slice().sort((a, b) => b - a);
+  const ds = await Promise.all(donemler.map(async (d) => {
+    try {
+      const r = await fetch(`/api/ozet/onerge-durum?donem=${d}`);
+      return r.ok ? await r.json() : null;
+    } catch { return null; }
+  }));
+  const kova = (j) => {
+    const d = j?.dagilim ?? [];
+    const bul = (re) => d.filter((x) => re.test(x.durum)).reduce((s, x) => s + x.n, 0);
+    const suresinde = bul(/^Cevaplandı$/), gec = bul(/Süresi Geçtikten Sonra/), hic = bul(/Cevaplanmadığı/);
+    const toplam = j?.toplam ?? 0;
+    return { toplam, suresinde, gec, hic, diger: Math.max(0, toplam - suresinde - gec - hic) };
+  };
+  const k = donemler.map((d, i) => ({ d, ...kova(ds[i]) })).filter((x) => x.toplam > 0);
+  if (!k.length) return;
+  const akt = k[0];
+  const pay = (n) => 100 * n / akt.toplam;
+  $('cevapSec').hidden = false;
+  $('cevapLede').innerHTML =
+    `${akt.d}. dönemde verilen <b>${fmt(akt.toplam)}</b> yazılı soru önergesinin <b>%${pf(pay(akt.suresinde))}</b> kadarı ` +
+    `süresi içinde cevaplandı; <b>%${pf(pay(akt.gec))}</b> kadarı süresi geçtikten sonra cevaplandı; ` +
+    `<b>${fmt(akt.hic)}</b> tanesi (<b>%${pf(pay(akt.hic))}</b>) hiç cevaplanmadı.`;
+  const satir = (ad, n, renk) => `<div class="dbar">
+      <div class="dtrack"><i style="width:${Math.max(2, pay(n)).toFixed(1)}%;background:${renk}"></i></div>
+      <div class="dl"><span>${ad}</span>%${pf(pay(n))} <small style="color:var(--muted)">· ${fmt(n)}</small></div>
+    </div>`;
+  let kurumBlok = '';
+  try {
+    const mk = await (await fetch(`/api/ozet/muhatap-cevap?donem=${akt.d}`)).json();
+    if (mk?.success && mk.kurumlar?.length >= 3) {
+      const ust = mk.kurumlar.slice(0, 6);
+      const enB = Math.max(...ust.map((k) => k.hic_pay), 1);
+      kurumBlok = `<div class="drow"><div class="kt">Kuruma göre <b>hiç cevaplanmama</b> oranı · en yüksek 6 (en az 100 önerge alan kurumlar)</div>` +
+        ust.map((k) => `<div class="dbar">
+            <div class="dtrack"><i style="width:${Math.max(2, 100 * k.hic_pay / enB).toFixed(1)}%;background:var(--petrol-ink)"></i></div>
+            <div class="dl"><span>${k.kurum.replace(/ Bakanlığı$/, '')}</span>%${pf(k.hic_pay)} <small style="color:var(--muted)">· ${fmt(k.toplam)} önerge</small></div>
+          </div>`).join('') +
+        `<details class="n" style="margin-top:8px"><summary>Bu çubuklar %100'e göre değildir — ölçekli ve kırpılmış</summary>` +
+        `<div class="nbody">${olcekNot(enB)} ${kirpmaNot(ust.length, mk.kurumlar.length, { birim: 'kurum' })}</div></details></div>`;
+    }
+  } catch (e) {  }
+
+  let konuBlok = '';
+  try {
+    const kk = await (await fetch('/api/ozet/konu-cevap')).json();
+    if (kk?.success && kk.konular?.length >= 3) {
+      const ust = kk.konular.slice(0, 6);
+      const enB = Math.max(...ust.map((k) => k.hic_pay), 1);
+      konuBlok = `<div class="drow"><div class="kt">Konuya göre <b>hiç cevaplanmama</b> oranı · ${kk.donemler.join(' ve ')}. dönem</div>` +
+        ust.map((k) => `<div class="dbar">
+            <div class="dtrack"><i style="width:${Math.max(2, 100 * k.hic_pay / enB).toFixed(1)}%;background:var(--petrol-ink)"></i></div>
+            <div class="dl"><span>${KISA[k.konu] ?? k.konu}</span>%${pf(k.hic_pay)} <small style="color:var(--muted)">· ${fmt(k.toplam)} önerge</small></div>
+          </div>`).join('') +
+        `<details class="n" style="margin-top:8px"><summary>Bu çubuklar %100'e göre değildir — kırpılmış, 28. dönem burada yok</summary>` +
+        `<div class="nbody">${olcekNot(enB)} ${kirpmaNot(ust.length, kk.konular.length, { birim: 'konu' })}
+          <b>28. dönem bu tabloda YOK</b> ve bu bir eksiklik değil: o dönemde konu etiketinin çoğu
+          doğrudan sorunun muhatabı olan bakanlıktan türetiliyor, dolayısıyla "konu × cevapsızlık"
+          kesişimi kendi girdisini geri okurdu. Konu etiketi burada bir <b>tahmindir</b>;
+          cevaplanma durumu TBMM'nin kendi alanıdır.</div></details></div>`;
+    }
+  } catch (e) {  }
+  $('cevapDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Soru önergelerine ne oldu</div><div class="badge">${akt.d}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="drow"><div class="kt">Çubuk: o dönemdeki önergelerin payı</div>` +
+    satir('Süresinde cevaplandı', akt.suresinde, 'var(--petrol)') +
+    satir('Süresi geçtikten sonra', akt.gec, 'var(--muted)') +
+    satir('Hiç cevaplanmadı', akt.hic, 'var(--petrol-ink)') +
+    (akt.diger > 0 ? satir(akt.d === donemler[0] ? 'Süre henüz dolmadı / geri alındı' : 'Yasama dönemi kapandığından hükümsüz / geri alındı', akt.diger, 'var(--line)') : '') +
+    `</div>` +
+    kurumBlok +
+    konuBlok +
+    `</div>` +
+    `<div class="demo-foot"><details class="n"><summary>Nasıl okunur — <b>partilerin değil, yürütmenin</b> cevap davranışı</summary>` +
+    `<div class="nbody">Yazılı soru önergesine cevap süresi <b>İçtüzük md.99</b>'a göre <b>15 gündür</b>; ` +
+    `durum etiketleri TBMM'nin kendi kaydından gelir. Kurum kırılımı <b>kişiye değil kuruma</b> aittir ` +
+    `(bakan değişse de aynı bakanlık tek kalemde toplanır) ve yalnız en az 100 önerge alan kurumları içerir. ` +
+    `Hiç cevaplanmama oranı dönem dönem: ` +
+    k.filter((x) => x.toplam >= 100).map((x) => `<b>${x.d}. D</b> %${pf(100 * x.hic / x.toplam)}`).join(' · ') +
+    (k.some((x) => x.toplam < 100) ? ` <small style="color:var(--muted)">(${k.filter((x) => x.toplam < 100).map((x) => x.d + '. dönem').join(', ')} örneklemi çok küçük (&lt;100) olduğu için oran hesaplanmadı)</small>` : '') +
+    ` (oran olduğu için dönem uzunluğundan bağımsızdır).</div></details>` +
+    `<a class="arrow" href="/karsilastir.html">Partilerin gündemine bak →</a></div>`;
+}
+
+function hsEsc(s) { return String(s ?? '').replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])); }
+
+let hsSonTerim = null;
+
+async function araYap(terim) {
+  const cikti = document.getElementById('araSonuc');
+  cikti.hidden = false;
+  cikti.innerHTML = '<div class="hs-ozet">Aranıyor…</div>';
+  hsSonTerim = terim;
+
+  let veri;
+  try { veri = await fetch(`/api/ozet/ara-parti-donem?q=${encodeURIComponent(terim)}`).then((r) => r.json()); }
+  catch { veri = null; }
+  if (hsSonTerim !== terim) return;
+
+  if (!veri?.success) {
+    cikti.innerHTML = '<div class="hs-ozet">Arama yapılamadı — bağlantı hatası.</div>';
+    return;
+  }
+  if (!veri.hucre?.length) {
+    cikti.innerHTML = `<div class="hs-ozet">“${hsEsc(terim)}” için <b>kayıt bulunamadı</b>. `
+      + `Arama, soru önergesi, Genel Kurul konuşması ve kanun teklifi <b>metninde</b> geçen kelimeleri `
+      + `bulur (konu etiketinde değil); farklı bir kelime deneyebilirsin.</div>`;
+    return;
+  }
+
+  cikti.innerHTML = '<div class="hs-ozet">' + '“' + hsEsc(terim) + '”'
+    + ' <b>' + nf(veri.toplam) + '</b> kez geçiyor — soru önergesi, Genel Kurul konuşması ve kanun teklifi toplamı.</div>'
+    + hsCizgiHtml(veri) + hsDrillLinks(terim);
+  hsCizgiEtkilesimKur(veri);
+}
+
+function hsDrillLinks(terim) {
+  const q = encodeURIComponent(terim);
+  const t = hsEsc(terim);
+  return '<div class="hs-drill">'
+    + '<a class="arrow" href="/vekil.html?soz=' + q + '">Konuşmalarda &quot;' + t + '&quot; ara →</a>'
+    + '<a class="arrow" href="/kanun.html?ara=' + q + '">Kanun tekliflerinde &quot;' + t + '&quot; ara →</a>'
+    + '</div>';
+}
+
+const HS_KAYNAK_AD = { onerge: 'Soru önergesi', konusma: 'Genel Kurul konuşması', kanun: 'Kanun teklifi' };
+
+function hsCizgiEtkilesimKur(veri) {
+  const wrap = document.querySelector('.hs-cizgi-wrap');
+  const svg = wrap?.querySelector('svg');
+  if (!wrap || !svg) return;
+  const tip = document.createElement('div');
+  tip.className = 'hs-tip';
+  tip.hidden = true;
+  wrap.appendChild(tip);
+
+  const detayMap = new Map();
+  for (const r of veri.detay ?? []) {
+    const k = `${r.donem}|${r.parti}`;
+    if (!detayMap.has(k)) detayMap.set(k, []);
+    detayMap.get(k).push(r);
+  }
+
+  const goster = (nokta) => {
+    const { parti, donem, n } = nokta.dataset;
+    const detaylar = detayMap.get(`${donem}|${parti}`) ?? [];
+    let h = `<div class="hs-tip-baslik"><i class="party-dot" style="background:${partiRenk(parti)}"></i>${hsEsc(parti)} · ${hsEsc(donem)}. dönem</div>`
+      + `<div class="hs-tip-satir"><span>Toplam</span><b>${nf(Number(n))}</b></div>`;
+    for (const kod of ['onerge', 'konusma', 'kanun']) {
+      const r = detaylar.find((x) => x.kaynak === kod);
+      h += `<div class="hs-tip-satir"><span>${HS_KAYNAK_AD[kod]}</span><span>${nf(r?.n ?? 0)}</span></div>`;
+    }
+    tip.innerHTML = h;
+    const wr = wrap.getBoundingClientRect(), nr = nokta.getBoundingClientRect();
+    const left = Math.max(72, Math.min(wr.width - 72, nr.left - wr.left + nr.width / 2));
+    tip.style.left = `${left}px`;
+    tip.style.top = `${(nr.top - wr.top).toFixed(1)}px`;
+    tip.hidden = false;
+  };
+  const gizle = () => { tip.hidden = true; };
+  svg.addEventListener('mouseover', (e) => { if (e.target.classList.contains('hs-nokta')) goster(e.target); });
+  svg.addEventListener('mouseout', (e) => { if (e.target.classList.contains('hs-nokta')) gizle(); });
+}
+
+function hsCizgiHtml(veri) {
+  const donemler = veri.donemler, partiler = veri.partiler;
+  const kismiSet = new Set(veri.kismi_donemler ?? []);
+  const map = new Map(veri.hucre.map((r) => [`${r.donem}|${r.parti}`, r.n]));
+  const M = donemler.length;
+
+  const W = 720, H = 260, m = { l: 44, r: 12, t: 10, b: 26 };
+  const pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const xs = (i) => m.l + (M > 1 ? (i / (M - 1)) * pw : pw / 2);
+  let max = 1;
+  for (const r of veri.hucre) if (r.n > max) max = r.n;
+  max = Math.ceil(max / 4) * 4 || 4;
+  const ys = (v) => m.t + ph - (v / max) * ph;
+
+  let g = '';
+  for (let t = 0; t <= 4; t++) {
+    const val = Math.round((max * t) / 4), y = ys(val).toFixed(1);
+    g += `<line x1="${m.l}" y1="${y}" x2="${W - m.r}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    g += `<text x="${(m.l - 8).toFixed(1)}" y="${(+y + 3).toFixed(1)}" fill="var(--muted)" font-size="10" text-anchor="end">${nf(val)}</text>`;
+  }
+  donemler.forEach((d, i) => {
+    const x = xs(i).toFixed(1), kismi = kismiSet.has(d);
+    g += `<line x1="${x}" y1="${m.t}" x2="${x}" y2="${(m.t + ph).toFixed(1)}" stroke="var(--line-2)" stroke-width="1"/>`;
+    g += `<text x="${x}" y="${H - 8}" fill="${kismi ? 'var(--muted)' : 'var(--ink-2)'}" font-size="10" text-anchor="middle">${d}${kismi ? '*' : ''}</text>`;
+  });
+
+  let lines = '';
+  for (const p of partiler) {
+    const color = partiRenk(p);
+    const vals = donemler.map((d) => map.get(`${d}|${p}`) ?? 0);
+    const pts = vals.map((v, i) => `${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join(' ');
+    lines += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".92"/>`;
+    lines += vals.map((v, i) => {
+      const cx = xs(i).toFixed(1), cy = ys(v).toFixed(1);
+      return `<circle cx="${cx}" cy="${cy}" r="2.8" fill="${color}"></circle>`
+        + `<circle cx="${cx}" cy="${cy}" r="9" fill="transparent" class="hs-nokta" `
+        + `data-parti="${hsEsc(p)}" data-donem="${donemler[i]}" data-n="${v}"></circle>`;
+    }).join('');
+  }
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Parti başına dönemlere göre eşleşme sayısı">${g}${lines}</svg>`;
+  const legend = `<div class="hs-cizgi-legend">` + partiler.map((p) =>
+    `<span><i class="party-dot" style="background:${partiRenk(p)}"></i>${hsEsc(p)}</span>`).join('') + `</div>`;
+
+  const kismiNot = kismiSet.size
+    ? ` Yıldızlı dönemlerde (${[...kismiSet].join(', ')}) konuşma parti ataması eski arşiv tutanağının satır sarması nedeniyle kısmi olabilir.`
+    : '';
+  return `<div class="hs-cizgi-wrap">${svg}${legend}</div>`
+    + `<div class="hs-cbar-not">Arama, belgenin <b>kendi metninde</b> geçen kelimeleri bulur (hepsi, herhangi bir sırada) `
+    + `— konu etiketine bakmaz (etiket bir tahmindir). Değerler <b>önerge + konuşma + kanun teklifi</b> `
+    + `kaynaklarının ham toplamıdır — AYM ve Resmî Gazete'nin parti boyutu yoktur, dahil değildir. `
+    + `Konuşma hacmi genelde en büyük pay olduğu için çizgiyi baskılayabilir; ağırlıklandırma yapılmaz. `
+    + `En çok görünen ${partiler.length} parti gösteriliyor`
+    + (veri.kirpilan_parti > 0 ? ` (kalan ${veri.kirpilan_parti} parti listede yoktur)` : '') + `.${kismiNot} `
+    + `Bir noktanın üzerine gelince o parti ve dönemin kaynak kırılımı görünür.</div>`;
+}
+
+document.getElementById('araForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const t = document.getElementById('araKutu').value.trim();
+  if (t.length < 3) {
+    const c = document.getElementById('araSonuc');
+    c.hidden = false;
+    c.innerHTML = '<div class="hs-ozet">En az <b>3 harf</b> yaz.</div>';
+    return;
+  }
+  araYap(t);
+});
+
+async function vitrinProfil(donem) {
+  const j = await fetchJSON('/api/ozet/arac-profili' + (donem ? `?donem=${donem}` : ''));
+  if (j === null) { vitrinHata('profilDemo', donem); $('profilSec').hidden = false; return; }
+  if (!j?.success || (j.partiler?.length ?? 0) < 3) { $('profilSec').hidden = true; return; }
+  $('profilSec').hidden = false;
+
+  const ust = j.partiler.slice(0, 6);
+  $('profilLede').innerHTML =
+    `Partileri ham sayıyla kıyaslamak yanıltır — kanun teklifi, soru önergesi ve konuşma ` +
+    `<b>farklı parlamento araçlarıdır</b>. Bu kart her partinin <b>kendi faaliyeti içindeki</b> ` +
+    `dağılımı gösterir; yüzdeler partinin kendi toplamına göredir, partiler arası değil.`;
+
+  const cubuk = (p) => {
+    const seg = [['Önerge', p.pay.onerge, 'var(--petrol)'], ['Konuşma', p.pay.konusma, 'var(--line-2)'], ['Teklif', p.pay.kanun, 'var(--petrol-ink)']];
+    const baskin = seg.slice().sort((a, b) => b[1] - a[1])[0];
+    const ipucu = seg.map(([ad, v]) => `${ad} %${pf(v)}`).join(' · ')
+      + (p.vekil_basina ? ` · vekil başına ${pf(p.vekil_basina.onerge)} önerge` : '');
+    return `<div class="prow">
+      <div class="pp">${p.parti} <small style="color:var(--muted)">· ${nf(p.toplam)}</small></div>
+      <div class="pbar" title="${ipucu}">${seg.map(([, v, c]) => v > 0 ? `<i style="width:${v}%;background:${c}"></i>` : '').join('')}</div>
+      <div class="pnum">${baskin[0]} <b>%${pf(baskin[1])}</b></div>
+    </div>`;
+  };
+
+  $('profilDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Parti başına araç dağılımı</div><div class="badge" id="badgeProfil">${j.donem}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="nlist">${ust.map(cubuk).join('')}</div></div>` +
+    `<div class="demo-foot"><details class="n"><summary>Bu yüzdeler <b>partiler arası kıyas değildir</b> — her parti kendi içinde</summary>` +
+    `<div class="nbody">${j.beyan} Taban: en az ${nf(j.taban)} kayıtlı partiler gösterilir` +
+    (j.taban_alti?.parti_n ? `; altında kalan <b>${nf(j.taban_alti.parti_n)}</b> parti (${nf(j.taban_alti.kayit_n)} kayıt) listede yok` : '') +
+    `.</div></details></div>`;
+  rozetSec('badgeProfil', j.donem, vitrinProfil);
+}
+
+async function vitrinSecim() {
+  const j = await fetchJSON('/api/ozet/secim-sonucu');
+  if (j === null) { vitrinHata('secimDemo'); $('secimSec').hidden = false; return; }
+  if (!j?.success || !j.secim?.partiler?.length) { $('secimSec').hidden = true; return; }
+  $('secimSec').hidden = false;
+  const s = j.secim;
+  $('secimLede').innerHTML = `${gunAy(s.tarih) || s.tarih} milletvekili genel seçiminde partilerin aldığı oy oranı${s.sandalye_biliniyor ? ' ve kazandığı sandalye sayısı' : ''}.`;
+  const satir = (p) => `<div class="dbar">
+      <div class="dtrack"><i style="width:${Math.max(2, p.oran)}%;background:${partiRenk(p.parti)}"></i></div>
+      <div class="dl"><span>${p.parti}</span>%${pf(p.oran)}${s.sandalye_biliniyor ? ` · ${nf(p.sandalye)} sandalye` : ''}</div>
+    </div>`;
+  $('secimDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Parti oy oranları</div><div class="badge">${s.donem}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="drow">${s.partiler.slice(0, 7).map(satir).join('')}</div></div>` +
+    `<div class="demo-foot"><div class="n">${s.kapsam_notu} <a href="/secim.html" style="color:var(--petrol);font-weight:700;text-decoration:none">Diğer dönemleri gör →</a></div></div>`;
+}
+
+async function vitrinYerel() {
+  const j = await fetchJSON('/api/ozet/yerel-meclis');
+  if (j === null) { vitrinHata('yerelDemo'); $('yerelSec').hidden = false; return; }
+  if (!j?.success || !j.meclis?.partiler?.length) { $('yerelSec').hidden = true; return; }
+  $('yerelSec').hidden = false;
+  const m = j.meclis;
+  $('yerelLede').innerHTML = `<b>${m.belediye}</b> örneği — meclis üyelerinin parti dağılımı, 2024 yerel seçimi sonrası.`;
+  const max = Math.max(...m.partiler.map((p) => p.n), 1);
+  const satir = (p) => `<div class="dbar">
+      <div class="dtrack"><i style="width:${Math.max(2, (p.n / max) * 100)}%;background:${partiRenk(p.parti)}"></i></div>
+      <div class="dl"><span>${p.parti}</span>${nf(p.n)}${p.oran != null ? ` · %${pf(p.oran)}` : ''}</div>
+    </div>`;
+  $('yerelDemo').innerHTML =
+    `<div class="demo-head"><div class="who">${m.belediye} meclis kompozisyonu</div><div class="badge">${nf(m.toplam_uye)} ÜYE</div></div>` +
+    `<div class="demo-body"><div class="drow">${m.partiler.slice(0, 7).map(satir).join('')}</div></div>` +
+    `<div class="demo-foot"><div class="n">${nf(j.belediyeler.length)} belediyeden yalnız biri — toplam değil, örnek. <a href="/yerel-yonetim.html" style="color:var(--petrol);font-weight:700;text-decoration:none">Diğer belediyeleri gör →</a></div></div>`;
+}
+
+async function vitrinRoster() {
+  const j = await fetchJSON('/api/ozet/yasama');
+  if (j === null) { vitrinHata('rosterDemo'); $('rosterSec').hidden = false; return; }
+  const satirlar = Object.entries(j?.vekil_sayisi ?? {}).sort((a, b) => b[1] - a[1]);
+  if (!j?.success || !satirlar.length) { $('rosterSec').hidden = true; return; }
+  $('rosterSec').hidden = false;
+  const toplam = satirlar.reduce((s, [, n]) => s + n, 0);
+  const max = satirlar[0][1];
+  $('rosterLede').innerHTML = `TBMM'nin <b>güncel vekil kaydı</b> — kim hangi partide olduğunu gösterir, ne yaptığını değil. Aşağıdaki oy/teklif kartları AYRI bir kaynaktan gelir ve parti değiştiren bir vekilin geçmiş eylemini eylem anındaki partisine yazar — bu yüzden ikisi bazen uyuşmaz.`;
+  const satir = ([parti, n]) => `<div class="dbar">
+      <div class="dtrack"><i style="width:${Math.max(2, (n / max) * 100)}%;background:${partiRenk(parti)}"></i></div>
+      <div class="dl"><span>${parti}</span>${nf(n)} sandalye</div>
+    </div>`;
+  $('rosterDemo').innerHTML =
+    `<div class="demo-head"><div class="who">Parti başına vekil sayısı</div><div class="badge">${j.donem}. DÖNEM</div></div>` +
+    `<div class="demo-body"><div class="drow">${satirlar.map(satir).join('')}</div></div>` +
+    `<div class="demo-foot"><div class="n">${nf(toplam)} vekil · TBMM'nin resmî üye kaydından.</div></div>`;
+}
+
+boot();
+vitrinProfil();
+vitrinYasama();
+vitrinOylama();
+vitrinButce();
+vitrinCevap();
+vitrinCevapSuresi();
+vitrinSecim();
+vitrinYerel();
+vitrinRoster();
+</script>
+</body>
+</html>
