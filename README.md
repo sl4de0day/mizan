@@ -2,16 +2,7 @@
 
 # Mizan
 
-### Türkiye Yasama ve Kamu Denetimi Analitik Platformu
-
 **Resmî kamu verileri üzerinden yasama faaliyetlerini, siyasi süreçleri ve yerel yönetim kararlarını analiz etmek için geliştirilen açık kaynaklı platform.**
-
-[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D22.5.0-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Fastify](https://img.shields.io/badge/Fastify-5.2-000000?style=flat-square&logo=fastify&logoColor=white)](https://fastify.dev/)
-[![SQLite](https://img.shields.io/badge/SQLite-node%3Asqlite-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://nodejs.org/api/sqlite.html)
-[![Testler](https://img.shields.io/badge/Test_Suitleri-27_Başarılı-brightgreen?style=flat-square)](./backend-node/test/)
-[![Lisans](https://img.shields.io/badge/Lisans-MIT-blue?style=flat-square)](./LICENSE)
 
 </div>
 
