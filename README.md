@@ -2,7 +2,7 @@
 
 # Mizan
 
-### Resmî kamu verileri üzerinden yasama faaliyetlerini, siyasi süreçleri ve yerel yönetim kararlarını analiz etmek için geliştirilen açık kaynaklı platform.**
+### Resmî kamu verileri üzerinden yasama faaliyetlerini, siyasi süreçleri ve yerel yönetim kararlarını analiz etmek için geliştirilen açık kaynaklı platform.
 
 </div>
 
